@@ -31,3 +31,24 @@ function therain_find_module($slug)
 
     return isset($registry[$slug]) ? $registry[$slug] : null;
 }
+
+/**
+ * Resolves the absolute path to a module's standalone database schema, if
+ * the manifest records one. Does not check that the file actually exists —
+ * planned modules reserve a path before their schema is written; callers
+ * that need to know whether the schema is real should check
+ * `standalone_ready` on the module entry instead.
+ *
+ * @param string $slug
+ * @return string|null
+ */
+function therain_module_database_path($slug)
+{
+    $module = therain_find_module($slug);
+
+    if ($module === null || empty($module['database'])) {
+        return null;
+    }
+
+    return dirname(__DIR__) . DIRECTORY_SEPARATOR . $module['database'];
+}
