@@ -1,5 +1,28 @@
 # Changelog
 
+## Phase 4 — 2026-08-18
+
+- Added management/pharmacy/database/db.sql, a standalone copy of the
+  existing Pharmacy schema (verified byte-identical to db.sql).
+- Added database/README.md placeholders for every other planned
+  module's reserved database location.
+- Added database/dbumi.sql, a hand-composed and hand-reviewed CORE +
+  Pharmacy combined schema (not auto-generated — see
+  docs/DBUMI-ARCHITECTURE.md).
+- Enriched modules/manifest.php with database/migrations paths,
+  standalone_ready/unified_ready flags, and a licensing placeholder for
+  every module, and added therain_module_database_path() to
+  modules/module-registry.php.
+- Added docs/DATABASE-ARCHITECTURE.md, MODULE-DATABASE-ARCHITECTURE.md,
+  DBUMI-ARCHITECTURE.md, STANDALONE-DEPLOYMENT-ARCHITECTURE.md,
+  MOBILE-SHOP-DATABASE-PLAN.md, and PHARMACY-DATABASE-MIGRATION-PLAN.md.
+- Found and documented a live defect independent of this project: two
+  reachable Pharmacy pages (add-damage.php, actions/cart.php) query an
+  undefined `medicine` table instead of `p_medicine` — recorded, not
+  fixed, per the "do not rewrite Pharmacy" rule.
+- Left the legacy Pharmacy schema, routes, and the Phase 3 auth system
+  unchanged.
+
 ## Phase 3 — 2026-08-18
 
 - Added migration 0002_identity_foundation.sql: users.tenant_id and

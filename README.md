@@ -51,6 +51,12 @@ For unified platform tooling, copy .env.example to a local ignored .env file, fi
 - docs/AUTHENTICATION-ARCHITECTURE.md
 - docs/TENANT-ARCHITECTURE.md
 - docs/ROLE-PERMISSION-ARCHITECTURE.md
+- docs/DATABASE-ARCHITECTURE.md
+- docs/MODULE-DATABASE-ARCHITECTURE.md
+- docs/DBUMI-ARCHITECTURE.md
+- docs/STANDALONE-DEPLOYMENT-ARCHITECTURE.md
+- docs/MOBILE-SHOP-DATABASE-PLAN.md
+- docs/PHARMACY-DATABASE-MIGRATION-PLAN.md
 - docs/CHANGELOG.md
 
 ## Development rule

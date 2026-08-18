@@ -4,8 +4,8 @@
 - [x] Phase 1 — Create non-destructive modular architecture foundations, documentation, storage boundaries, database copy, module registry, installer foundation, and deployment foundations.
 - [x] Phase 2 — Environment-aware configuration and controlled database migration framework.
 - [x] Phase 3 — Unified authentication, registration, tenant, role/permission, and session foundation.
-- [ ] Phase 4 — Tenant, business settings, branches, and data isolation migrations.
-- [ ] Phase 5 — Users, roles, permissions, authorization middleware, and permission-aware navigation.
+- [x] Phase 4 — Module database architecture: per-module standalone db.sql, database/dbumi.sql, richer module manifest, and the Pharmacy schema migration plan. (Tenant/branch/user/role tables themselves were already established in Phase 2/3; this phase is what actually asked for those to be revisited and instead found and documented the CORE + module database split.)
+- [ ] Phase 5 — Authorization middleware and permission-aware navigation over the Phase 3 role/permission engine.
 - [ ] Phase 6 — Shared dashboard/layout evolution, localization, currency settings, and notification shell.
 - [ ] Phase 7 — Incremental Pharmacy POS migration with compatibility wrappers and workflow tests.
 - [ ] Phase 8 — Supermarket management module and transaction-state workflow.
