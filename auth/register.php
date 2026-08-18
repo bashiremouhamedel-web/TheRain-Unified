@@ -4,6 +4,7 @@ require_once __DIR__ . '/../core/config/bootstrap.php';
 require_once __DIR__ . '/../core/config/catalog.php';
 require_once __DIR__ . '/../core/auth/csrf.php';
 require_once __DIR__ . '/../core/auth/session-service.php';
+require_once __DIR__ . '/../core/currency/currency-service.php';
 require_once dirname(__DIR__) . '/modules/module-registry.php';
 
 therain_session_start_secure();
@@ -18,9 +19,23 @@ $old = isset($_SESSION['therain_register_old']) ? $_SESSION['therain_register_ol
 unset($_SESSION['therain_register_errors'], $_SESSION['therain_register_old']);
 
 $modules = therain_module_registry();
-$currencies = therain_currency_options();
 $languages = therain_language_options();
 $timezones = therain_timezone_options();
+
+// Prefer the live, richer database currency catalog (Phase 5); fall back
+// to the small static list only if the database is unreachable, so this
+// form still renders without a database connection (Phase 3 behaviour).
+try {
+    $currencies = array();
+    foreach (therain_currency_catalog(true) as $currencyRow) {
+        $currencies[$currencyRow['code']] = $currencyRow['name'] . ' (' . $currencyRow['symbol'] . ')';
+    }
+    if (empty($currencies)) {
+        $currencies = therain_currency_options();
+    }
+} catch (Exception $exception) {
+    $currencies = therain_currency_options();
+}
 
 function therain_old($old, $key, $default = '')
 {

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../users/user-service.php';
 require_once __DIR__ . '/../tenants/tenant-service.php';
 require_once __DIR__ . '/../permissions/permission-service.php';
 require_once __DIR__ . '/../audit/activity-log-service.php';
+require_once __DIR__ . '/../payments/payment-method-service.php';
 require_once dirname(__DIR__, 2) . '/modules/module-registry.php';
 
 if (!function_exists('therain_validate_registration_input')) {
@@ -260,6 +261,9 @@ if (!function_exists('therain_register_tenant')) {
             $roleId = therain_create_super_admin_role($tenantId, $connection);
             therain_assign_role($userId, $roleId, $tenantId, $userId, $connection);
             therain_set_tenant_owner($tenantId, $userId, $connection);
+
+            $currencyCode = !empty($input['currency']) ? trim($input['currency']) : 'XAF';
+            therain_apply_tenant_financial_defaults($tenantId, $currencyCode, $connection);
 
             $settings = array();
 
