@@ -1,0 +1,12 @@
+# Uploaded files are user-controlled content. Never execute scripts from
+# this directory, even if an attacker manages to place one here.
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phar|pl|py|cgi|asp|aspx|sh)$">
+    Require all denied
+    Order allow,deny
+    Deny from all
+</FilesMatch>
