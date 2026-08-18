@@ -32,6 +32,19 @@ Future migrations must be additive, timestamped, reversible where practical, and
 
 Existing Pharmacy tables should receive tenant_id, branch_id, created_by, and updated_by only after a documented backfill strategy maps each legacy store row correctly.
 
+## Phase 5 framework
+
+database/migrations/0003_financial_foundation.sql extends `currencies`
+and `payment_methods` (adding, among other columns, a unique constraint
+on `payment_methods.code` that Phase 2 omitted) and adds nine new
+tables for tenant/branch currency and payment-method enablement,
+exchange rates, payments, refunds, cashier shifts, and per-tenant
+financial settings. It does not touch any legacy Pharmacy table —
+Pharmacy's own `payment_method` (singular) table is untouched and
+unrelated to CORE's `payment_methods` (plural) catalog. See
+docs/CURRENCY-ARCHITECTURE.md, docs/PAYMENT-METHOD-ARCHITECTURE.md, and
+docs/FINANCIAL-DATA-ARCHITECTURE.md.
+
 ## Phase 3 framework
 
 database/migrations/0002_identity_foundation.sql extends the Phase 2
