@@ -16,6 +16,7 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 - Pharmacy is registered in modules/manifest.php as the only enabled management module.
 - Planned management folders exist for supermarket, POS, hospital, shop, mobile shop, hotel, restaurant, school, and warehouse. They are not implemented or enabled.
 - Installer pages are explicit HTTP 501 foundation notices, not a functional installer.
+- Phase 2 adds an opt-in core configuration bootstrap and an additive CLI migration runner. Neither replaces the legacy Pharmacy configuration or database flow.
 - PHP runtime testing is not available in this workspace.
 
 ## Architecture
@@ -36,6 +37,8 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 4. Serve the repository using a PHP-capable web server.
 
 The current legacy configuration remains in config/db.php to prevent a breaking migration. .env.example documents the intended future environment configuration; it is not yet consumed by the legacy runtime.
+
+For unified platform tooling, copy .env.example to a local ignored .env file, fill in local database values, and use the CLI migration commands documented in database/migrations/README.md. Test migrations against a disposable database copy before use.
 
 ## Documentation
 

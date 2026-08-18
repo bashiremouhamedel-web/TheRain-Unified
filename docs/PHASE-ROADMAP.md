@@ -2,7 +2,7 @@
 
 - [x] Phase 0 — Inspect the legacy Pharmacy POS, establish Git, and preserve a baseline.
 - [x] Phase 1 — Create non-destructive modular architecture foundations, documentation, storage boundaries, database copy, module registry, installer foundation, and deployment foundations.
-- [ ] Phase 2 — Environment-aware configuration and controlled database migration framework.
+- [x] Phase 2 — Environment-aware configuration and controlled database migration framework.
 - [ ] Phase 3 — Unified authentication and registration design with password migration strategy.
 - [ ] Phase 4 — Tenant, business settings, branches, and data isolation migrations.
 - [ ] Phase 5 — Users, roles, permissions, authorization middleware, and permission-aware navigation.

@@ -1,5 +1,13 @@
 # Changelog
 
+## Phase 2 — 2026-08-18
+
+- Added a dependency-free environment configuration bootstrap under core/config.
+- Expanded .env.example while keeping real .env files ignored.
+- Added the CLI-only additive database migration runner and the initial Unified platform schema migration.
+- Added static Pharmacy database usage mapping and Phase 2 configuration, database, and test reports.
+- Left the legacy Pharmacy configuration, routes, database tables, and runtime code unchanged.
+
 ## Phase 1 — 2026-08-18
 
 - Preserved the existing Pharmacy POS application and routes without moving or deleting legacy files.
