@@ -1,0 +1,40 @@
+# Database migration plan
+
+## Existing schema baseline
+
+database/db.sql is an identical copy of the preserved root db.sql. The existing schema contains 23 tables:
+
+- store and payment_method
+- p_customer and p_supplier
+- p_medicine_category, p_brand, medicine_unit, medicine_type, and p_medicine
+- p_supply, p_purchase_summary, and p_purchase
+- p_invoice_summary and p_invoice
+- p_return_summary, p_return_product, and p_damage_product
+- p_payment, p_expense_category, and p_expense
+- cart, return_cart, and customer
+
+The store table and store_id values currently act as a partial business boundary. Many business tables include a store reference.
+
+## Important inconsistency
+
+The schema favors p-prefixed Pharmacy tables, but portions of the PHP application query older unprefixed table names. Do not rename, drop, or merge either form until a real database instance confirms which legacy routes depend on which physical tables and data.
+
+## Controlled evolution
+
+Future migrations must be additive, timestamped, reversible where practical, and tested against a copied database. The initial sequence should add:
+
+1. tenants and tenant settings
+2. users and user-to-tenant memberships
+3. roles, permissions, and role assignments
+4. management systems, modules, tenant module assignments, and module settings
+5. branches, warehouses, and ownership references
+6. audit events and authenticated session/device records
+
+Existing Pharmacy tables should receive tenant_id, branch_id, created_by, and updated_by only after a documented backfill strategy maps each legacy store row correctly.
+
+## Rules
+
+- Preserve root db.sql during the staged migration.
+- Add new migration files only in database/migrations.
+- Do not modify production data without backup, dry run, rollback plan, and verification queries.
+- Do not treat the copied schema as evidence that the legacy UI has been runtime-tested.
