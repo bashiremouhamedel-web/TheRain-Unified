@@ -1,0 +1,584 @@
+/* ============================================================================
+   PHARMACY POS - RESPONSIVE STYLES
+   Mobile, Tablet, and Desktop optimizations
+   ============================================================================ */
+
+/* Extra Small Devices (< 576px) */
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding: 0 10px;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    .action-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .action-buttons .btn {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .table-responsive {
+        font-size: 12px;
+    }
+
+    .table td, .table th {
+        padding: 8px 4px;
+    }
+
+    .card {
+        border-radius: 8px;
+    }
+
+    .stats-card {
+        margin-bottom: 15px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .badge {
+        font-size: 10px;
+    }
+
+    .sidebar-mini.sidebar-collapse .main-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar-mini.sidebar-open .main-sidebar {
+        z-index: 1050;
+    }
+
+    .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 8px 12px !important;
+    }
+
+    .info-box {
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    h4 {
+        font-size: 16px;
+    }
+
+    h5 {
+        font-size: 14px;
+    }
+
+    .login-box {
+        width: 95%;
+    }
+
+    .register-box {
+        width: 95%;
+    }
+}
+
+/* Small Devices (576px and up) */
+@media (min-width: 576px) {
+    .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .register-box {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+
+/* Medium Devices (768px and up) */
+@media (min-width: 768px) {
+    .quick-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .sidebar-mini .sidebar-open ~ .content-wrapper {
+        margin-left: 250px;
+    }
+
+    .page-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .action-buttons {
+        margin-left: auto;
+    }
+
+    .action-buttons .btn {
+        flex: initial;
+    }
+
+    .modal {
+        display: flex !important;
+        align-items: center;
+    }
+
+    .modal-dialog {
+        margin: auto;
+    }
+}
+
+/* Large Devices (992px and up) */
+@media (min-width: 992px) {
+    .quick-stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .form-row {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .product-grid {
+        height: 100%;
+    }
+
+    .container-fluid {
+        padding: 0 30px;
+    }
+
+    .content-wrapper {
+        padding: 30px;
+    }
+
+    section {
+        padding: 30px;
+    }
+
+    .form-section {
+        padding: 30px;
+    }
+
+    .main-sidebar {
+        width: 250px;
+    }
+
+    .sidebar-mini .content-wrapper {
+        margin-left: 0;
+    }
+
+    .sidebar-mini.sidebar-open .content-wrapper {
+        margin-left: 250px;
+    }
+}
+
+/* Extra Large Devices (1200px and up) */
+@media (min-width: 1200px) {
+    .quick-stats {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
+
+/* Table Responsiveness */
+@media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0;
+        min-width: 600px;
+    }
+
+    .table td {
+        white-space: nowrap;
+    }
+
+    .table thead {
+        font-size: 12px;
+    }
+
+    .table tbody {
+        font-size: 12px;
+    }
+
+    .table .btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
+/* Card Grid Responsiveness */
+@media (max-width: 768px) {
+    .card-columns {
+        column-count: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-columns {
+        column-count: 3;
+    }
+}
+
+/* Navbar Responsiveness */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 18px;
+    }
+
+    .navbar-nav {
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+    }
+}
+
+/* Sidebar Menu Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+
+    .nav-treeview {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+}
+
+/* Form Responsiveness */
+@media (max-width: 768px) {
+    .form-inline {
+        flex-direction: column;
+    }
+
+    .form-inline .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .form-inline .btn {
+        width: 100%;
+    }
+}
+
+/* Modal Responsiveness */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 10px;
+        max-height: calc(100vh - 20px);
+    }
+
+    .modal-body {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .modal-fullscreen {
+        max-width: 100%;
+    }
+}
+
+/* Button Group Responsiveness */
+@media (max-width: 576px) {
+    .btn-group-vertical {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group-vertical > .btn {
+        width: 100%;
+    }
+}
+
+/* Dropdown Menu Responsiveness */
+@media (max-width: 576px) {
+    .dropdown-menu {
+        left: 0 !important;
+        right: 0 !important;
+        min-width: 100%;
+    }
+}
+
+/* Alert Responsiveness */
+@media (max-width: 576px) {
+    .alert {
+        padding: 12px;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .alert .close {
+        font-size: 18px;
+    }
+}
+
+/* Badge Responsiveness */
+@media (max-width: 576px) {
+    .badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}
+
+/* Input Responsiveness */
+@media (max-width: 576px) {
+    .form-control,
+    .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select {
+        font-size: 16px;
+    }
+}
+
+/* Search Bar Responsiveness */
+@media (max-width: 768px) {
+    .search-bar {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+}
+
+/* Pagination Responsiveness */
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .pagination .page-item {
+        margin: 2px;
+    }
+
+    .pagination .page-link {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+}
+
+/* Flex Utilities Responsiveness */
+@media (max-width: 768px) {
+    .flex-sm-column {
+        flex-direction: column;
+    }
+
+    .flex-sm-wrap {
+        flex-wrap: wrap;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .sidebar,
+    .btn,
+    .btn-group,
+    .dropdown,
+    .pagination,
+    .modal,
+    .toast,
+    .popover,
+    .tooltip {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+    .table thead th {
+        background: white;
+        border: 1px solid black;
+    }
+
+    .table tbody td {
+        border: 1px solid #ddd;
+    }
+}
+
+/* Landscape Mode */
+@media (max-height: 500px) and (orientation: landscape) {
+    .navbar {
+        min-height: 40px;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
+    .form-group label {
+        margin-bottom: 4px;
+    }
+
+    .form-control {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Retina Display Optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .btn,
+    .card,
+    .alert {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    .card,
+    .form-section,
+    section {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+
+    .form-control {
+        background: #333;
+        border-color: #555;
+        color: #e0e0e0;
+    }
+
+    .form-control:focus {
+        background: #333;
+        border-color: #17A2B8;
+        color: #e0e0e0;
+    }
+}
+
+/* Accessibility - Focus Visible */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: more) {
+    .btn {
+        border-width: 2px;
+    }
+
+    .form-control {
+        border-width: 2px;
+    }
+
+    .badge {
+        border: 1px solid currentColor;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
