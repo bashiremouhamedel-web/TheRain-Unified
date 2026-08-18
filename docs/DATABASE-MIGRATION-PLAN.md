@@ -32,6 +32,10 @@ Future migrations must be additive, timestamped, reversible where practical, and
 
 Existing Pharmacy tables should receive tenant_id, branch_id, created_by, and updated_by only after a documented backfill strategy maps each legacy store row correctly.
 
+## Phase 2 framework
+
+database/migrate.php is a CLI-only runner that reads environment-backed configuration, tracks applied filenames in schema_migrations, supports status and dry-run modes, and blocks destructive SQL keywords. The first migration, 0001_initial_unified_schema.sql, creates only new Unified platform tables. It does not alter the legacy Pharmacy schema or connect legacy data to new tenant records.
+
 ## Rules
 
 - Preserve root db.sql during the staged migration.
