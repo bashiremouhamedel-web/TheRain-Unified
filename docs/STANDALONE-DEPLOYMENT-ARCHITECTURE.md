@@ -42,6 +42,23 @@ No other module has enough implementation to define what "CORE required
 for it" even means yet. Their `standalone_ready` is `false` and no
 packaging logic exists to test.
 
+## Phase 5 update: what "CORE required" will include once a module accepts payments
+
+Phase 5 added the currency/payment-method/financial tables to CORE
+(`currencies`, `payment_methods`, `tenant_currency_settings`,
+`tenant_payment_methods`, `branch_payment_methods`,
+`payment_method_currencies`, `exchange_rates`, `payments`,
+`payment_refunds`, `cashier_shifts`, `financial_settings`). Pharmacy
+still needs none of them — it keeps its own legacy `payment_method`
+table and has not been wired to `therain_record_payment()`. But any
+future module built CORE-native (Mobile Shop, per
+docs/MOBILE-SHOP-DATABASE-PLAN.md, which already references CORE's
+`payment_methods` rather than inventing its own) would need this
+Phase 5 table set as part of its "CORE required for `<slug>`" package —
+not the full CORE identity+financial set is optional per module, but
+the financial subset specifically becomes mandatory the moment a module
+records a payment through the shared path.
+
 ## What Phase 4 does NOT build
 
 - An actual installer UI with checkboxes ("[✓] Pharmacy [✓] Supermarket

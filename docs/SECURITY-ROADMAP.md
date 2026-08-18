@@ -42,3 +42,21 @@ registration, and other pages — nothing there was changed. Finding 3
 runtime onto core/config/bootstrap.php still requires the database-backed
 compatibility test called for in Phase 2. Findings 8, 9, and 10 remain
 entirely open.
+
+## Phase 5 update
+
+Finding 2 (prepared statements) is now also true for the new financial
+surface (core/currency, core/payments): every query is a bound
+prepared statement. No card number or CVV is ever stored — only
+external provider references. Refunds are additive rows
+(payment_refunds), never a mutation or deletion of the original
+payment, satisfying finding 9's "no silent destructive action" concern
+for this specific surface. As with Phase 3, none of this touches
+Pharmacy's own payment_method table or any Pharmacy route.
+
+Two `bind_param()` bugs (a parameter-count mismatch and an int/string
+type mismatch) were found and fixed during this phase's own self-review
+before commit — see docs/PHASE-5-REPORT.md's security review for full
+disclosure. Neither shipped; both are noted here because their
+existence, even briefly, is a reminder that this workspace still has no
+way to run PHP and catch such errors automatically.

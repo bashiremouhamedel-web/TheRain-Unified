@@ -1,5 +1,32 @@
 # Changelog
 
+## Phase 5 — 2026-08-19
+
+- Added migration 0003_financial_foundation.sql: extended currencies
+  and payment_methods (including a code-uniqueness fix payment_methods
+  should have had since Phase 2), and nine new tables for currency/
+  payment-method enablement, exchange rates, payments, refunds, and
+  cashier shifts, plus financial_settings.
+- Seeded 60 additional currencies (69 total) and a 24-entry payment
+  method catalog covering Cameroon and other African providers, using
+  verified current ISO 4217 codes (SLE/STN/MRU, not their discontinued
+  predecessors).
+- Added core/currency/currency-service.php and
+  core/payments/{payment-method,payment,cashier-shift}-service.php: the
+  single formatting/recording/refund/shift-management entry points,
+  designed so a transaction's original amount and currency are never
+  overwritten by a later conversion or display preference.
+- Wired tenant registration to apply working financial defaults (Cash
+  enabled, currency set) instead of leaving new tenants unconfigured.
+- Updated database/dbumi.sql with the same Phase 5 CORE additions,
+  re-verified against db.sql to confirm the Pharmacy section is still
+  untouched.
+- Found and fixed two bind_param bugs during self-review before commit
+  (a parameter-count mismatch and an int/string type mismatch) — see
+  docs/PHASE-5-REPORT.md's security review for full disclosure.
+- Left the legacy Pharmacy schema, routes, and payment_method table
+  unchanged.
+
 ## Phase 4 — 2026-08-18
 
 - Added management/pharmacy/database/db.sql, a standalone copy of the

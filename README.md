@@ -18,6 +18,8 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 - Installer pages are explicit HTTP 501 foundation notices, not a functional installer.
 - Phase 2 adds an opt-in core configuration bootstrap and an additive CLI migration runner. Neither replaces the legacy Pharmacy configuration or database flow.
 - Phase 3 adds a Unified authentication, registration, tenant, role/permission, and session foundation at auth/ and core/{auth,users,tenants,permissions,audit}. It uses a session cookie distinct from the legacy app and does not yet bridge a Unified tenant to a legacy Pharmacy `store` row.
+- Phase 4 adds a per-module standalone database convention (management/pharmacy/database/db.sql) and database/dbumi.sql, the combined CORE+module reference schema.
+- Phase 5 adds a 69-currency and 24-payment-method catalog with tenant/branch enablement, at core/currency and core/payments. New tenants get working financial defaults (Cash enabled) automatically at registration.
 - PHP runtime testing is not available in this workspace.
 
 ## Architecture
@@ -57,6 +59,9 @@ For unified platform tooling, copy .env.example to a local ignored .env file, fi
 - docs/STANDALONE-DEPLOYMENT-ARCHITECTURE.md
 - docs/MOBILE-SHOP-DATABASE-PLAN.md
 - docs/PHARMACY-DATABASE-MIGRATION-PLAN.md
+- docs/CURRENCY-ARCHITECTURE.md
+- docs/PAYMENT-METHOD-ARCHITECTURE.md
+- docs/FINANCIAL-DATA-ARCHITECTURE.md
 - docs/CHANGELOG.md
 
 ## Development rule
