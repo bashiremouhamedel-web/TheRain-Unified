@@ -24,3 +24,21 @@
 7. Perform an authenticated test and penetration review before production.
 
 No security rewrite was performed in Phase 1 to avoid breaking legacy Pharmacy POS behaviour.
+
+## Phase 3 update
+
+Findings 1, 2, 4, 5, 6, and 7 above are now addressed for the new
+Unified authentication surface only (core/auth, core/users, core/tenants,
+core/permissions, auth/*): password_hash()/password_verify(), prepared
+statements throughout, tenant-scoped role/permission checks, CSRF tokens,
+hardened/tracked sessions with a concurrent-session limit, and
+content-validated uploads stored under storage/uploads with script
+execution blocked via .htaccess. See
+docs/AUTHENTICATION-ARCHITECTURE.md for detail.
+
+All six findings remain fully open for the legacy Pharmacy login,
+registration, and other pages — nothing there was changed. Finding 3
+(config/db.php hardcoded credentials) is unchanged; migrating the legacy
+runtime onto core/config/bootstrap.php still requires the database-backed
+compatibility test called for in Phase 2. Findings 8, 9, and 10 remain
+entirely open.

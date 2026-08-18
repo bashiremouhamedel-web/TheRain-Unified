@@ -17,6 +17,7 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 - Planned management folders exist for supermarket, POS, hospital, shop, mobile shop, hotel, restaurant, school, and warehouse. They are not implemented or enabled.
 - Installer pages are explicit HTTP 501 foundation notices, not a functional installer.
 - Phase 2 adds an opt-in core configuration bootstrap and an additive CLI migration runner. Neither replaces the legacy Pharmacy configuration or database flow.
+- Phase 3 adds a Unified authentication, registration, tenant, role/permission, and session foundation at auth/ and core/{auth,users,tenants,permissions,audit}. It uses a session cookie distinct from the legacy app and does not yet bridge a Unified tenant to a legacy Pharmacy `store` row.
 - PHP runtime testing is not available in this workspace.
 
 ## Architecture
@@ -47,6 +48,9 @@ For unified platform tooling, copy .env.example to a local ignored .env file, fi
 - docs/MIGRATION-REPORT.md
 - docs/SECURITY-ROADMAP.md
 - docs/DATABASE-MIGRATION-PLAN.md
+- docs/AUTHENTICATION-ARCHITECTURE.md
+- docs/TENANT-ARCHITECTURE.md
+- docs/ROLE-PERMISSION-ARCHITECTURE.md
 - docs/CHANGELOG.md
 
 ## Development rule
