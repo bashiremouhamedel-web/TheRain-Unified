@@ -51,11 +51,32 @@ fresh install from the current schema, both of these live code paths
 will fail with a SQL error the first time they run. This is a
 pre-existing defect in the original application, not something Phase 4
 introduced — most likely the schema was renamed from unprefixed to
-`p_`-prefixed at some point and these two call sites were missed. It is
-recorded here, not fixed here, per the "do not rewrite Pharmacy" rule;
-fixing it is a one-line, low-risk, high-value candidate for whoever owns
-the next Pharmacy compatibility pass (change `medicine` → `p_medicine`
-in exactly those two queries, then test against a real database).
+`p_`-prefixed at some point and these two call sites were missed.
+
+**Phase 6 correction to the paragraph above (originally written in
+Phase 4, without a database to test against):** this was called "a
+one-line, low-risk, high-value candidate" — that assessment was wrong,
+found by actually reproducing the failure in Phase 6 against a real
+disposable database
+(`ERROR 1146 (42S02): Table 'therain_unified_pharmacy_test.medicine'
+doesn't exist`, confirmed for both queries) and then reading the full
+column list each query depends on, not just its table name. Both
+queries also select `manufacturerprice`
+(add-damage.php:54, `$med_row['manufacturerprice']`;
+actions/cart.php:15, `$productByCode[0]["manufacturerprice"]`) — a
+column that does not exist on `p_medicine` either (its cost column is
+named `cost`). A mechanical `medicine` → `p_medicine` rename would
+silently trade a loud, safe SQL error for a PHP 8 "undefined array
+key" warning and a blank manufacturer-price value baked into a
+pipe-delimited option string (`id|name|qty|price|manufacturerprice`)
+that client-side JavaScript presumably parses positionally — a worse,
+quieter failure mode than today's. This is exactly the "not clearly
+correct, document it" case, not the "clearly correct, fix it" case, so
+**Phase 6 does not apply this fix.** Whoever owns the Pharmacy
+compatibility pass needs to first determine what `manufacturerprice`
+was supposed to read from the current schema (most likely `cost`, but
+that needs confirming against how the pipe-delimited value is consumed
+client-side) before either query can be safely repaired.
 
 ## Step 5: migration strategy
 
@@ -63,8 +84,12 @@ Pharmacy tables are **not** touched by this phase or scheduled for
 imminent change. The staged plan, in order, matching
 docs/PHASE-ROADMAP.md's Phase 7:
 
-1. **Fix the two broken queries above** (`medicine` → `p_medicine`).
-   Independent of everything else; no schema change required.
+1. **Repair the two broken queries above.** Not a one-line rename — see
+   the Phase 6 correction above. Requires deciding what
+   `manufacturerprice` should read (likely `cost`) and verifying how
+   the pipe-delimited option value is consumed client-side, before
+   changing either query. Independent of every other step; no schema
+   change required.
 2. **Add nullable `tenant_id`/`branch_id`/`created_by`/`updated_by`**
    to each authoritative Pharmacy table, backfilled by mapping each
    existing `store_id` to a newly-created tenant (one tenant per
@@ -80,12 +105,29 @@ docs/PHASE-ROADMAP.md's Phase 7:
 5. **Route-by-route compatibility testing** before retiring any old
    table name, per docs/DATABASE-MIGRATION-PLAN.md's existing rules.
 
-None of steps 2–5 are started. Step 1 is a documented, ready-to-apply
-one-line fix that this phase deliberately leaves for explicit approval
-rather than applying unasked.
+None of steps 2–5 are started. Step 1 is fully investigated and
+documented but deliberately not applied — see the Phase 6 correction
+above.
 
 ## What Phase 4 changed here
 
 Nothing in the legacy schema or legacy PHP. Added: this document,
 management/pharmacy/database/db.sql (a copy, not a change — see
-docs/DATABASE-ARCHITECTURE.md), and the `medicine`-table finding above.
+docs/DATABASE-ARCHITECTURE.md), and the `medicine`-table finding above
+(later corrected in Phase 6).
+
+## Phase 6: Pharmacy schema executed against a real database
+
+management/pharmacy/database/db.sql was imported into a disposable
+database (`therain_unified_pharmacy_test`, redirected from its
+hardcoded `pharmacy` database name — the machine already had a real,
+populated `pharmacy` database from prior local use, which was left
+untouched). All 23 tables and every foreign key in the file were
+created successfully with no errors. A `store` row was inserted, then
+the exact two queries from add-damage.php and actions/cart.php were
+run verbatim and both failed with `ERROR 1146 (42S02): Table
+'therain_unified_pharmacy_test.medicine' doesn't exist`, while the
+equivalent `p_medicine` query succeeded — reproducing, not just
+statically inferring, the Step 4a finding, and revealing the deeper
+`manufacturerprice` problem documented above. See
+docs/DATABASE-EXECUTION-REPORT.md for the full Phase 6 test log.

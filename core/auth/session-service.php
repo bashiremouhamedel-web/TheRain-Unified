@@ -118,10 +118,18 @@ if (!function_exists('therain_session_create')) {
             );
         }
 
-        session_regenerate_id(true);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
 
         $uuid = therain_generate_uuid();
-        $sessionTokenHash = hash('sha256', session_id());
+        // $uuid (cryptographically random, already unique-constrained) is
+        // mixed into the hash so this is guaranteed unique even if
+        // session_id() were ever unavailable/unchanged — found via Phase 6
+        // testing: hashing session_id() alone collided under
+        // user_sessions_token_hash_unique when no active session existed
+        // for session_regenerate_id() to rotate.
+        $sessionTokenHash = hash('sha256', session_id() . $uuid);
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? substr($_SERVER['HTTP_USER_AGENT'], 0, 1000) : null;
         $lifetimeMinutes = (int) therain_config('app', 'session_lifetime_minutes', 120);

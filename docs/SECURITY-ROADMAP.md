@@ -60,3 +60,22 @@ before commit — see docs/PHASE-5-REPORT.md's security review for full
 disclosure. Neither shipped; both are noted here because their
 existence, even briefly, is a reminder that this workspace still has no
 way to run PHP and catch such errors automatically.
+
+## Phase 6 update
+
+A real PHP + MariaDB environment became available this phase (see
+docs/RUNTIME-ENVIRONMENT.md), and Phase 5's closing line above was
+proven right: running the code for real found a bug static review had
+missed. `therain_session_create()` could throw an **uncaught**
+`mysqli_sql_exception` (a duplicate `session_token_hash`) under a
+narrow but real condition, which would have surfaced a full stack
+trace — file paths included — to whatever called it, exactly finding
+#10's concern ("error messages should avoid revealing database or
+system details in production"). Fixed by making the hash unconditionally
+unique instead of catching-and-hiding the symptom; see
+docs/SECURITY-VALIDATION-REPORT.md for the full writeup and the
+76-assertion test run (registration, login, CSRF, tenant isolation,
+payments, refunds, cashier shifts, upload content-validation, and a
+targeted reporting-injection check) that passed after the fix.
+Findings 1, 2, 4, 5, 6, and 7 remain fully open for legacy Pharmacy,
+unchanged.
