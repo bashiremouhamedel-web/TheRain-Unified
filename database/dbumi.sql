@@ -50,11 +50,18 @@
 -- USAGE: dbumi.sql is a reference/installation artifact. It is not applied
 -- by database/migrate.php. Apply CORE via the migration runner
 -- (php database/migrate.php) for a database that already has Pharmacy, or
--- import dbumi.sql directly for a fresh combined install. NOT TESTED
--- against a live MySQL/MariaDB server in this workspace — see
--- docs/PHASE-4-REPORT.md.
+-- import dbumi.sql directly for a fresh combined install:
+--   mysql --default-character-set=utf8mb4 -u <user> -p <database> < database/dbumi.sql
+-- Tested against a live MariaDB 10.4.28 server in Phase 6 — see
+-- docs/DBUMI-VALIDATION-REPORT.md. The explicit SET NAMES below is required:
+-- importing this file with a plain `mysql < dbumi.sql` (no charset flag) was
+-- verified in Phase 6 to silently corrupt every non-ASCII seeded value
+-- (currency symbols, Arabic/Chinese language names) without it, because the
+-- client then negotiates some other default charset for the session. This
+-- statement makes a correct import happen regardless of client defaults.
 -- ============================================================================
 
+SET NAMES utf8mb4;
 
 -- ============================================================================
 -- SECTION 1: CORE — shared platform schema
@@ -496,7 +503,8 @@ CREATE TABLE IF NOT EXISTS user_currency_preferences (
     CONSTRAINT user_currency_preferences_currency_foreign
         FOREIGN KEY (currency_id) REFERENCES currencies (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT='Display-only. Setting a preference here must never change a stored payments.amount/currency_id.';
 
 CREATE TABLE IF NOT EXISTS exchange_rates (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -534,7 +542,8 @@ CREATE TABLE IF NOT EXISTS tenant_payment_methods (
     CONSTRAINT tenant_payment_methods_method_foreign
         FOREIGN KEY (payment_method_id) REFERENCES payment_methods (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT='Only one row per tenant should have is_default=1; enforced in core/payments, not by a DB constraint.';
 
 CREATE TABLE IF NOT EXISTS branch_payment_methods (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -552,7 +561,8 @@ CREATE TABLE IF NOT EXISTS branch_payment_methods (
     CONSTRAINT branch_payment_methods_method_foreign
         FOREIGN KEY (payment_method_id) REFERENCES payment_methods (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT='A branch can only further RESTRICT its tenant''s enabled methods; that parent relationship is enforced in core/payments, not by a DB constraint.';
 
 CREATE TABLE IF NOT EXISTS payment_method_currencies (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -609,7 +619,8 @@ CREATE TABLE IF NOT EXISTS cashier_shifts (
     CONSTRAINT cashier_shifts_reviewed_by_foreign
         FOREIGN KEY (reviewed_by) REFERENCES users (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT='"Only one open shift per cashier at a time" is an application rule (core/payments/cashier-shift-service.php), not a DB constraint — MySQL cannot express a partial unique index cleanly.';
 
 CREATE TABLE IF NOT EXISTS payments (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -674,7 +685,8 @@ CREATE TABLE IF NOT EXISTS payments (
     CONSTRAINT payments_base_currency_foreign
         FOREIGN KEY (base_currency_id) REFERENCES currencies (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT='amount/currency_id are the original transaction truth and must never be overwritten; base_amount/exchange_rate are a derived, simultaneously-stored conversion, not a replacement.';
 
 CREATE TABLE IF NOT EXISTS payment_refunds (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
