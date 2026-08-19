@@ -4,11 +4,13 @@
 
 `currencies` (Phase 2, extended in Phase 5) is the single global currency
 catalog. Tenants do not get their own copies — they enable rows from it
-via `tenant_currency_settings`. As of Phase 5 it holds 69 currencies: the
-9 seeded in Phase 3 (XAF, XOF, NGN, GHS, KES, ZAR, EGP, USD, EUR) plus 33
-additional African currencies and 27 additional world currencies added in
-migration 0003, covering every code the Phase 5 brief listed by name,
-plus ZWG (Zimbabwe Gold) — not requested by name, but required as a real
+via `tenant_currency_settings`. As of Phase 5 it holds 70 currencies
+(verified by direct query against a real database in Phase 6 — see
+docs/DATABASE-EXECUTION-REPORT.md): the 9 seeded in Phase 3 (XAF, XOF,
+NGN, GHS, KES, ZAR, EGP, USD, EUR) plus 61 added in migration 0003 — 34
+African currencies and 27 world currencies — covering every code the
+Phase 5 brief listed by name, plus ZWG (Zimbabwe Gold), which is the
+34th African currency: not requested by name, but required as a real
 settlement currency for the requested EcoCash payment method.
 
 Each row carries: ISO 4217 `code`, `name`, `symbol`, `countries` (a

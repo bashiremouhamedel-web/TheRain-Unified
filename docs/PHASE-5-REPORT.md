@@ -38,10 +38,14 @@ into without any change to that engine itself.
   `tenant_payment_methods`, `branch_payment_methods`,
   `payment_method_currencies`, `cashier_shifts`, `payments`,
   `payment_refunds`, plus `financial_settings`.
-- Seed data: 6 new permissions, 60 new currencies (33 African + 27
-  world, see docs/CURRENCY-ARCHITECTURE.md for the ISO-4217 accuracy
-  notes), 24 payment-method catalog rows, and currency-restriction rows
-  for the 10 country-specific mobile-money/digital-wallet methods.
+- Seed data: 6 new permissions, 61 new currencies (34 African + 27
+  world — corrected in Phase 6 after a real database query showed 70
+  rows, not the 69 originally documented here; the seed data itself was
+  always correct, only this count was wrong, see
+  docs/DATABASE-EXECUTION-REPORT.md), see docs/CURRENCY-ARCHITECTURE.md
+  for the ISO-4217 accuracy notes, 24 payment-method catalog rows, and
+  currency-restriction rows for the 10 country-specific mobile-money/
+  digital-wallet methods.
 - No Pharmacy table altered. No existing 0001/0002 table dropped or
   renamed.
 
@@ -104,7 +108,7 @@ docs/CHANGELOG.md, README.md.
 
 ## Currency catalog added
 
-69 total currencies (9 from Phase 3 + 60 new). Every code the brief
+70 total currencies (9 from Phase 3 + 61 new). Every code the brief
 listed by name is present, using current (not discontinued) ISO 4217
 codes — see docs/CURRENCY-ARCHITECTURE.md's ISO 4217 accuracy notes for
 the SLE/STN/MRU redenomination corrections and the ZWG addition.

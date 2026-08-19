@@ -15,12 +15,13 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 - Pharmacy POS legacy routes remain at the repository root and continue to be the operational baseline.
 - Pharmacy is registered in modules/manifest.php as the only enabled management module.
 - Planned management folders exist for supermarket, POS, hospital, shop, mobile shop, hotel, restaurant, school, and warehouse. They are not implemented or enabled.
-- Installer pages are explicit HTTP 501 foundation notices, not a functional installer.
+- Installer pages are explicit HTTP 501 foundation notices, not a functional installer, except installer/requirements.php which (since Phase 6) really does detect PHP version/extensions/writable storage/database connectivity — it still writes nothing.
 - Phase 2 adds an opt-in core configuration bootstrap and an additive CLI migration runner. Neither replaces the legacy Pharmacy configuration or database flow.
 - Phase 3 adds a Unified authentication, registration, tenant, role/permission, and session foundation at auth/ and core/{auth,users,tenants,permissions,audit}. It uses a session cookie distinct from the legacy app and does not yet bridge a Unified tenant to a legacy Pharmacy `store` row.
 - Phase 4 adds a per-module standalone database convention (management/pharmacy/database/db.sql) and database/dbumi.sql, the combined CORE+module reference schema.
-- Phase 5 adds a 69-currency and 24-payment-method catalog with tenant/branch enablement, at core/currency and core/payments. New tenants get working financial defaults (Cash enabled) automatically at registration.
-- PHP runtime testing is not available in this workspace.
+- Phase 5 adds a 70-currency and 24-payment-method catalog with tenant/branch enablement, at core/currency and core/payments. New tenants get working financial defaults (Cash enabled) automatically at registration.
+- Phase 6 executed the full migration stack, dbumi.sql, and Pharmacy schema against a real PHP 8.0.28 + MariaDB 10.4.28 environment for the first time, with results in docs/PHASE-6-REPORT.md.
+- A real PHP + MariaDB environment (XAMPP) was available and used as of Phase 6; see docs/RUNTIME-ENVIRONMENT.md for exact versions and how to reproduce it locally. It is not guaranteed to be present in every future session.
 
 ## Architecture
 
@@ -62,6 +63,10 @@ For unified platform tooling, copy .env.example to a local ignored .env file, fi
 - docs/CURRENCY-ARCHITECTURE.md
 - docs/PAYMENT-METHOD-ARCHITECTURE.md
 - docs/FINANCIAL-DATA-ARCHITECTURE.md
+- docs/RUNTIME-ENVIRONMENT.md
+- docs/DATABASE-EXECUTION-REPORT.md
+- docs/DBUMI-VALIDATION-REPORT.md
+- docs/SECURITY-VALIDATION-REPORT.md
 - docs/CHANGELOG.md
 
 ## Development rule

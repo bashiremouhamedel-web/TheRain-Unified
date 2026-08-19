@@ -1,5 +1,34 @@
 # Changelog
 
+## Phase 6 — 2026-08-19
+
+- Executed migrations 0001–0003 against a real PHP 8.0.28 + MariaDB
+  10.4.28 environment for the first time — all applied cleanly, 31
+  tables and 57 foreign keys created and verified, re-run confirmed
+  idempotent.
+- Imported database/dbumi.sql into an independent database and diffed
+  it against the migration-built one; found and fixed two real bugs
+  (missing COMMENT clauses on 5 tables, and a charset bug that silently
+  corrupted every non-ASCII seed value on a plain `mysql <` import).
+  After fixes: 0 differences across all 31 CORE tables.
+- Ran a 76-assertion PHP test harness against real data covering
+  registration, login, tenant isolation, currency, payment methods,
+  branch restrictions, payments, refunds, cashier shifts, and
+  reporting — 76 passed, 0 failed, after fixing an uncaught-exception
+  bug in therain_session_create() that the run surfaced.
+- Reproduced the Pharmacy `medicine`/`p_medicine` issue against a real
+  database and found it deeper than Phase 4 assessed: both queries also
+  reference a `manufacturerprice` column absent from `p_medicine` too.
+  Corrected the Phase 4 assessment; deliberately did not apply a
+  mechanical fix.
+- Corrected a currency-count documentation error (69/60 → 70/61) found
+  by directly querying the real database.
+- Made installer/requirements.php a real environment-detection page
+  (PHP version, extensions, writable storage, database connectivity);
+  every other installer step remains the Phase 1 placeholder.
+- Left the legacy Pharmacy schema, routes, and every other application
+  behavior unchanged.
+
 ## Phase 5 — 2026-08-19
 
 - Added migration 0003_financial_foundation.sql: extended currencies
@@ -7,7 +36,7 @@
   should have had since Phase 2), and nine new tables for currency/
   payment-method enablement, exchange rates, payments, refunds, and
   cashier shifts, plus financial_settings.
-- Seeded 60 additional currencies (69 total) and a 24-entry payment
+- Seeded 61 additional currencies (70 total) and a 24-entry payment
   method catalog covering Cameroon and other African providers, using
   verified current ISO 4217 codes (SLE/STN/MRU, not their discontinued
   predecessors).
