@@ -4,9 +4,10 @@
 
 Migrations 0001–0003 and database/dbumi.sql were actually run against a
 real PHP 8.0.28 + MariaDB 10.4.28 environment in Phase 6 — every prior
-phase's execution of this section was static-only. All 31 tables and
-57 foreign keys were created and verified; `database/migrate.php` was
-confirmed idempotent on a second run. Full detail in
+phase's execution of this section was static-only. All 32 tables and
+58 foreign keys were created and verified (corrected in Phase 7 from an
+original 31/57 miscount); `database/migrate.php` was confirmed
+idempotent on a second run. Full detail in
 docs/DATABASE-EXECUTION-REPORT.md and docs/DBUMI-VALIDATION-REPORT.md,
 including two real bugs found in dbumi.sql (missing table comments and
 an import-charset data-corruption bug) and their fixes.

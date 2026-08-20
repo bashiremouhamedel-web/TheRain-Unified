@@ -46,17 +46,21 @@ three as `APPLIED`.
 
 ## Tables created
 
-31 tables (`SHOW TABLES`), matching the expected count exactly: 21 from
-0001, 0 new from 0002 (ALTER + seed only), 9 new from 0003, plus
-`schema_migrations` itself (created by the runner, not a migration
-file). Full list verified against the expected set — no missing, no
-unexpected extra table.
+**Corrected in Phase 7** (found by re-verifying with a direct
+`information_schema.tables` count, not by trusting this file): **32**
+tables (`SHOW TABLES`), not the 31 originally written here — 21 from
+0001, 0 new from 0002 (ALTER + seed only), **10** new from 0003 (this
+document's original count of "9 new from 0003" missed
+`financial_settings`), plus `schema_migrations` itself (created by the
+runner, not a migration file). Full list re-verified against the
+corrected expected set — no missing, no unexpected extra table.
 
 ## Foreign keys — every one requested, verified to exist
 
 Queried `information_schema.KEY_COLUMN_USAGE` for every FK in the
-database. All 57 foreign keys across all 31 tables were created
-successfully, including every relationship the phase brief called out
+database. **Corrected in Phase 7:** all **58** foreign keys (not 57)
+across all 32 tables were created successfully, including every
+relationship the phase brief called out
 by name: `users.tenant_id → tenants`, `tenants.owner_user_id → users`,
 `user_roles` (user/role/tenant/assigned_by), `branches.tenant_id`,
 `tenant_currency_settings` (tenant + currency),

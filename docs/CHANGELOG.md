@@ -1,11 +1,50 @@
 # Changelog
 
+## Phase 7 — 2026-08-20
+
+- Added tests/, a dependency-free, 109-assertion repeatable test suite
+  covering auth, tenant isolation, permissions, currency, payment
+  methods, branch restrictions, payments, refunds, cashier shifts,
+  reporting, module registry, and dbumi schema consistency, against a
+  disposable, name-safety-checked database.
+- Added database/build-dbumi.php: database/dbumi.sql is now generated
+  from the raw migration files (verbatim, in order) plus each enabled
+  module's schema, instead of hand-composed — eliminating the class of
+  drift bug Phase 6 found. Verified by an automated table-by-table diff
+  that now runs on every test-suite execution.
+- Refactored database/migrate.php's logic into
+  database/migration-runner.php (callable directly, not just via CLI);
+  the CLI tool's behavior is unchanged.
+- Corrected two Phase 6 documentation counting errors found by
+  re-querying the real database: 31/57 tables/foreign keys should have
+  been 32/58 (financial_settings was omitted from the running count).
+- Re-investigated the Pharmacy `medicine`/`p_medicine` issue more
+  deeply: both affected queries also reference a `manufacturerprice`
+  column absent from `p_medicine`, so the Phase 4 "one-line fix"
+  assessment was wrong twice over now; still not applied.
+- Found and fixed a real environment-specific instability: mysqli
+  crashes (with no catchable PHP error) when spawning a subprocess or
+  using MYSQLI_REPORT_STRICT with multi_query() on this PHP
+  8.0.28/Windows build; mitigated via in-process migration calls and
+  classic mysqli mode, though not 100% eliminated — see
+  docs/TEST-SUITE-REPORT.md.
+- Attempted a real HTTP request/response cycle test; one request
+  succeeded before the same environment instability blocked the rest —
+  see docs/HTTP-TEST-REPORT.md.
+- Documented the module packaging architecture (docs/MODULE-PACKAGING-REPORT.md)
+  without building a packaging tool (no second module exists yet to
+  test one against).
+- Left the legacy Pharmacy schema, routes, and every other application
+  behavior unchanged. Confirmed the real, pre-existing `pharmacy`
+  database on the development machine was never touched.
+
 ## Phase 6 — 2026-08-19
 
 - Executed migrations 0001–0003 against a real PHP 8.0.28 + MariaDB
-  10.4.28 environment for the first time — all applied cleanly, 31
-  tables and 57 foreign keys created and verified, re-run confirmed
-  idempotent.
+  10.4.28 environment for the first time — all applied cleanly, 32
+  tables and 58 foreign keys created and verified (corrected in Phase 7
+  from an original miscount of 31/57 — the running counts had missed
+  the financial_settings table), re-run confirmed idempotent.
 - Imported database/dbumi.sql into an independent database and diffed
   it against the migration-built one; found and fixed two real bugs
   (missing COMMENT clauses on 5 tables, and a charset bug that silently

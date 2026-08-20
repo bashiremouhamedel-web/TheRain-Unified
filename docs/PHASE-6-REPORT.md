@@ -32,8 +32,10 @@ instead.
 - `php database/migrate.php --status` / `--dry-run` / (apply) — first
   successful execution of migrations 0001–0003 in this workspace's
   history. Re-run confirmed idempotent (`SKIPPED` on the second pass).
-- Full foreign-key inventory via `information_schema` — all 57 FKs
-  across 31 tables confirmed present and correctly targeted.
+- Full foreign-key inventory via `information_schema` — all 58 FKs
+  across 32 tables confirmed present and correctly targeted (this
+  report originally said 57/31; corrected in Phase 7 after a direct
+  `information_schema` re-count — see docs/DATABASE-EXECUTION-REPORT.md).
 - `database/dbumi.sql` imported into a second, independent database and
   diffed table-by-table against the migration-built one.
 - `management/pharmacy/database/db.sql` imported (name-redirected to a

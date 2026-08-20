@@ -21,7 +21,8 @@ The existing Pharmacy POS application is the preserved foundation and the first 
 - Phase 4 adds a per-module standalone database convention (management/pharmacy/database/db.sql) and database/dbumi.sql, the combined CORE+module reference schema.
 - Phase 5 adds a 70-currency and 24-payment-method catalog with tenant/branch enablement, at core/currency and core/payments. New tenants get working financial defaults (Cash enabled) automatically at registration.
 - Phase 6 executed the full migration stack, dbumi.sql, and Pharmacy schema against a real PHP 8.0.28 + MariaDB 10.4.28 environment for the first time, with results in docs/PHASE-6-REPORT.md.
-- A real PHP + MariaDB environment (XAMPP) was available and used as of Phase 6; see docs/RUNTIME-ENVIRONMENT.md for exact versions and how to reproduce it locally. It is not guaranteed to be present in every future session.
+- Phase 7 adds a committed, repeatable test suite (tests/, 109 assertions) and database/build-dbumi.php (dbumi.sql is now generated from the raw migrations, not hand-composed). It also found a real, only partially resolved environment instability (mysqli/subprocess crashes on this PHP 8.0.28/Windows build) that blocked a full real-HTTP test — see docs/PHASE-7-REPORT.md, docs/TEST-SUITE-REPORT.md, and docs/HTTP-TEST-REPORT.md.
+- A real PHP + MariaDB environment (XAMPP) was available and used as of Phase 6; see docs/RUNTIME-ENVIRONMENT.md for exact versions and how to reproduce it locally. It is not guaranteed to be present in every future session, and Phase 7 found it is not fully stable even when present — see docs/TEST-SUITE-REPORT.md.
 
 ## Architecture
 
@@ -67,7 +68,18 @@ For unified platform tooling, copy .env.example to a local ignored .env file, fi
 - docs/DATABASE-EXECUTION-REPORT.md
 - docs/DBUMI-VALIDATION-REPORT.md
 - docs/SECURITY-VALIDATION-REPORT.md
+- docs/TEST-SUITE-REPORT.md
+- docs/DBUMI-BUILD-REPORT.md
+- docs/HTTP-TEST-REPORT.md
+- docs/MODULE-PACKAGING-REPORT.md
 - docs/CHANGELOG.md
+
+## Testing
+
+`php tests/run.php` runs the repeatable test suite against a
+disposable, name-safety-checked database (never a real one — see
+docs/TEST-SUITE-REPORT.md). Requires PHP with mysqli and a reachable
+MySQL/MariaDB server configured via `.env`.
 
 ## Development rule
 
