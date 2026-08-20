@@ -131,3 +131,16 @@ equivalent `p_medicine` query succeeded — reproducing, not just
 statically inferring, the Step 4a finding, and revealing the deeper
 `manufacturerprice` problem documented above. See
 docs/DATABASE-EXECUTION-REPORT.md for the full Phase 6 test log.
+
+## Phase 7: made permanent, and the fix decision re-examined
+
+The Phase 6 reproduction above is now `tests/pharmacy/PharmacyTest.php`
+— part of the committed, repeatable suite (docs/TEST-SUITE-REPORT.md),
+so this finding is re-verified on every test run instead of resting on
+a one-off manual check. Phase 7 also answered the questions Step 6
+above left open (intended table, origin of `manufacturerprice`, which
+workflows depend on it) as far as this repository's own history allows
+— see docs/PHASE-7-REPORT.md's Task 5 section for the full walkthrough.
+Conclusion unchanged: not safe to apply without also tracing how the
+pipe-delimited value (`id|name|qty|price|manufacturerprice`) is
+consumed client-side, which was not done this phase. Still not fixed.
