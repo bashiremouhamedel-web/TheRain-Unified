@@ -10,11 +10,19 @@
  *
  * This runner is CLI-only and executes only source-controlled SQL migrations.
  * It does not migrate or rename legacy Pharmacy tables.
+ *
+ * This file is a thin CLI wrapper (argument parsing, output formatting,
+ * exit codes) over database/migration-runner.php, which holds the
+ * actual logic and is also used by tests/bootstrap.php to apply
+ * migrations without spawning a nested PHP process — see
+ * docs/TEST-SUITE-REPORT.md.
  */
 if (PHP_SAPI !== 'cli') {
     http_response_code(403);
     exit("This migration runner is available only from the command line.\n");
 }
+
+require_once __DIR__ . '/migration-runner.php';
 
 $options = getopt('', array('dry-run', 'status', 'help'));
 
@@ -54,37 +62,20 @@ if (!$connection->set_charset($database['charset'])) {
     exit(1);
 }
 
-$migrationPath = __DIR__ . '/migrations';
-$migrationFiles = glob($migrationPath . DIRECTORY_SEPARATOR . '[0-9][0-9][0-9][0-9]_*.sql');
+$migrationFiles = therain_migration_files(__DIR__ . '/migrations');
 
 if ($migrationFiles === false) {
     fwrite(STDERR, "Unable to read the migrations directory.\n");
     exit(1);
 }
 
-sort($migrationFiles, SORT_STRING);
-
-$trackingTableExists = false;
-$trackingCheck = $connection->query("SHOW TABLES LIKE 'schema_migrations'");
-
-if ($trackingCheck instanceof mysqli_result) {
-    $trackingTableExists = $trackingCheck->num_rows > 0;
-    $trackingCheck->free();
-}
-
 if (isset($options['status'])) {
-    if (!$trackingTableExists) {
+    if (!therain_migrations_tracking_table_exists($connection)) {
         echo "Migration tracking table does not exist. No migrations have been applied by this runner.\n";
         exit(0);
     }
 
-    $appliedResult = $connection->query('SELECT migration, batch, applied_at FROM schema_migrations ORDER BY migration ASC');
-    $applied = array();
-
-    while ($row = $appliedResult->fetch_assoc()) {
-        $applied[$row['migration']] = $row;
-    }
-    $appliedResult->free();
+    $applied = therain_migrations_applied_names($connection);
 
     foreach ($migrationFiles as $migrationFile) {
         $migration = basename($migrationFile);
@@ -105,90 +96,21 @@ if (isset($options['dry-run'])) {
     exit(0);
 }
 
-if (!$trackingTableExists) {
-    $trackingSql = 'CREATE TABLE IF NOT EXISTS schema_migrations ('
-        . 'id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,'
-        . 'migration VARCHAR(255) NOT NULL,'
-        . 'batch INT UNSIGNED NOT NULL,'
-        . 'applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,'
-        . 'PRIMARY KEY (id),'
-        . 'UNIQUE KEY schema_migrations_migration_unique (migration)'
-        . ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+$results = therain_migrations_apply($connection, $migrationFiles);
+$failed = false;
 
-    if (!$connection->query($trackingSql)) {
-        fwrite(STDERR, "Unable to create the migration tracking table.\n");
-        exit(1);
+foreach ($results as $result) {
+    if ($result['status'] === 'failed') {
+        fwrite(STDERR, ($result['error'] ?: 'Migration failed') . ($result['migration'] ? ': ' . $result['migration'] : '') . PHP_EOL);
+        $failed = true;
+        break;
     }
+
+    echo strtoupper($result['status']) . str_repeat(' ', 9 - strlen($result['status'])) . $result['migration'] . PHP_EOL;
 }
 
-$appliedResult = $connection->query('SELECT migration FROM schema_migrations');
-$applied = array();
-
-while ($row = $appliedResult->fetch_assoc()) {
-    $applied[$row['migration']] = true;
-}
-$appliedResult->free();
-
-$batchResult = $connection->query('SELECT MAX(batch) AS maximum_batch FROM schema_migrations');
-$batchRow = $batchResult->fetch_assoc();
-$batchResult->free();
-$batch = empty($batchRow['maximum_batch']) ? 1 : ((int) $batchRow['maximum_batch'] + 1);
-
-foreach ($migrationFiles as $migrationFile) {
-    $migration = basename($migrationFile);
-
-    if (isset($applied[$migration])) {
-        echo "SKIPPED  " . $migration . PHP_EOL;
-        continue;
-    }
-
-    $sql = file_get_contents($migrationFile);
-
-    if ($sql === false || trim($sql) === '') {
-        fwrite(STDERR, "Migration file is unreadable or empty: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    if (preg_match('/\b(DROP|TRUNCATE|RENAME)\b/i', $sql)) {
-        fwrite(STDERR, "Destructive SQL keyword blocked in migration: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    if (!$connection->multi_query($sql)) {
-        fwrite(STDERR, "Migration failed: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    do {
-        if ($result = $connection->store_result()) {
-            $result->free();
-        }
-    } while ($connection->more_results() && $connection->next_result());
-
-    if ($connection->error) {
-        fwrite(STDERR, "Migration failed: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    $statement = $connection->prepare(
-        'INSERT INTO schema_migrations (migration, batch) VALUES (?, ?)'
-    );
-
-    if ($statement === false) {
-        fwrite(STDERR, "Unable to record applied migration: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    $statement->bind_param('si', $migration, $batch);
-
-    if (!$statement->execute()) {
-        $statement->close();
-        fwrite(STDERR, "Unable to record applied migration: " . $migration . PHP_EOL);
-        exit(1);
-    }
-
-    $statement->close();
-    echo "APPLIED  " . $migration . PHP_EOL;
+if ($failed) {
+    exit(1);
 }
 
 echo "Migration run complete.\n";
