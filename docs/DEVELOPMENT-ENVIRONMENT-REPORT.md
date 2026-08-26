@@ -147,6 +147,21 @@ again rather than starting from zero.
   above. The instability is real but did not block the specific work
   Phase 8B needed to do.
 
+## Addendum: reinforced by continued testing through the rest of Phase 8
+
+Testing continued throughout Phases 8B-8O (real HTTP flows, repeated
+`tests/run.php` runs before and after each code change). The pattern
+held: long clean streaks (5/5, and others) interrupted by sudden
+crash-heavy batches (one batch: 5/6 crashed; a single immediate retry
+right after: clean). Every crash observed continued to be the same
+zero-output, no-catchable-error signature, and every crash this phase
+happened during CORE-only code (migration/table checks) that this
+phase's own Pharmacy-integration work never touches — confirming, again,
+that the instability is environmental, not a regression introduced by
+any change in this phase. No new mitigation was found; "retry, don't
+debug the project code" remained the correct and sufficient response
+every time.
+
 ## Recommended environment (per the "do not modify the project to
 compensate for an external defect" instruction)
 
