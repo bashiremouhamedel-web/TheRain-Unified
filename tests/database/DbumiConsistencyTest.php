@@ -98,7 +98,7 @@ function therain_test_run_dbumi_consistency()
     $totalTables = $dbumiConnection->query(
         "SELECT COUNT(*) AS c FROM information_schema.tables WHERE table_schema = '" . $dbumiConnection->real_escape_string($dbumiDatabaseName) . "'"
     )->fetch_assoc()['c'];
-    therain_test_assert('dbumi-built database has 55 tables total (32 CORE + 23 Pharmacy)', (int) $totalTables === 55, "actual=$totalTables");
+    therain_test_assert('dbumi-built database has 56 tables total (32 CORE + 24 Pharmacy)', (int) $totalTables === 56, "actual=$totalTables");
 
     // 6. No duplicate table names anywhere in the generated file (the
     // builder already enforces this at build time; re-check the output

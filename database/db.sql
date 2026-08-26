@@ -478,6 +478,31 @@ CREATE TABLE `customer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
+-- UNIFIED TENANT BRIDGE (Phase 8 — optional, additive)
+-- ============================================================================
+-- Maps a legacy Pharmacy `store` row to a TheRain Unified `tenant` row when
+-- the store was provisioned through Unified registration
+-- (auth/actions/register.php -> management/pharmacy/compatibility/bridge-service.php).
+-- Nullable/optional by design: a standalone Pharmacy install (no core/
+-- tables at all) still installs and runs correctly with this table present
+-- but never populated. No foreign key to `tenants` (a CORE table) is
+-- declared here, so this schema file stays independently installable with
+-- zero CORE tables, exactly as before — see
+-- docs/PHARMACY-DATABASE-MIGRATION-PLAN.md and docs/PHARMACY-TENANT-INTEGRATION.md.
+
+CREATE TABLE `p_tenant_bridge` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `store_id` INT NOT NULL,
+  `tenant_id` BIGINT UNSIGNED DEFAULT NULL,
+  `tenant_uuid` CHAR(36) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `unique_store_bridge` (`store_id`),
+  UNIQUE KEY `unique_tenant_bridge` (`tenant_id`),
+  FOREIGN KEY (`store_id`) REFERENCES `store`(`store_id`) ON DELETE CASCADE,
+  INDEX `idx_tenant_uuid` (`tenant_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================================
 -- INDEXES FOR PERFORMANCE
 -- ============================================================================
 

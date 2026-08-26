@@ -36,7 +36,7 @@ function therain_test_run_pharmacy_schema()
     $tableCount = $connection->query(
         "SELECT COUNT(*) AS c FROM information_schema.tables WHERE table_schema = '" . $connection->real_escape_string($pharmacyDatabaseName) . "'"
     )->fetch_assoc()['c'];
-    therain_test_assert('Pharmacy schema has 23 tables', (int) $tableCount === 23, "actual=$tableCount");
+    therain_test_assert('Pharmacy schema has 24 tables', (int) $tableCount === 24, "actual=$tableCount");
 
     $connection->query("INSERT INTO store (name, user_name, pass, email) VALUES ('Test Pharmacy', 'testuser', 'hash', 'test@example.com')");
     $storeId = $connection->insert_id;

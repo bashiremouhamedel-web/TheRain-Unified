@@ -8,11 +8,21 @@
 	date_default_timezone_set('Africa/Douala');
 	
 	// Database Configuration
+	// THERAIN_PHARMACY_DB_OVERRIDE lets test tooling and the Phase 8
+	// compatibility bridge (management/pharmacy/compatibility/bridge-service.php)
+	// point this connection at a disposable database instead of the real
+	// one, WITHOUT changing behavior for any existing deployment: the
+	// override is only ever set explicitly by test bootstrap code, never
+	// present in a normal request, so $db below is unchanged from before
+	// this phase for every real Pharmacy installation.
 	$host = "localhost";
 	$name = "root";
 	$pass = "";
-	$db = "pharmacy";
-	
+	$db = getenv('THERAIN_PHARMACY_DB_OVERRIDE');
+	if ($db === false || $db === '') {
+		$db = "pharmacy";
+	}
+
 	// Connect to Database
 	$conn = new mysqli($host, $name, $pass, $db);
 	
@@ -68,7 +78,9 @@
 	$datetime = date("Y-m-d H:i:s");
 	
 	// Location
-	$loc = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$loc = isset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'])
+		? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
+		: null; // unset outside a real HTTP request (CLI/tests)
 	
 	// ============================================================================
 	// HELPER FUNCTIONS
