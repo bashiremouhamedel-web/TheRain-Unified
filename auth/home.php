@@ -10,6 +10,9 @@ therain_session_start_secure();
 $user = therain_require_login('login.php');
 therain_session_touch();
 
+$homeError = isset($_SESSION['therain_home_error']) ? $_SESSION['therain_home_error'] : null;
+unset($_SESSION['therain_home_error']);
+
 $connection = therain_db();
 $tenant = null;
 $module = null;
@@ -30,6 +33,7 @@ if (!empty($user['tenant_id'])) {
     if ($moduleRow) {
         $registryEntry = therain_find_module($moduleRow['module_slug']);
         $module = array(
+            'slug' => $moduleRow['module_slug'],
             'name' => $registryEntry ? $registryEntry['name'] : $moduleRow['module_slug'],
             'status' => $moduleRow['status'],
         );
@@ -62,6 +66,10 @@ if (!empty($user['tenant_id'])) {
       <p class="brand mb-1">TheRain Unified</p>
       <h4 class="mb-3">Welcome, <?php echo htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8'); ?></h4>
 
+      <?php if ($homeError) : ?>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($homeError, ENT_QUOTES, 'UTF-8'); ?></div>
+      <?php endif; ?>
+
       <?php if ($tenant) : ?>
         <p class="text-muted mb-1">Business</p>
         <p class="mb-3"><strong><?php echo htmlspecialchars($tenant['business_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
@@ -79,10 +87,17 @@ if (!empty($user['tenant_id'])) {
         </p>
       <?php endif; ?>
 
-      <div class="alert alert-light border">
-        Your Unified account and business are set up. Dashboard access for your selected management
-        system is connected in a later phase; it is not available from this account yet.
-      </div>
+      <?php if ($module && $module['slug'] === 'pharmacy' && $module['status'] === 'enabled') : ?>
+        <div class="alert alert-light border">
+          Your Unified account and Pharmacy business are set up and connected.
+        </div>
+        <a href="actions/enter-pharmacy.php" class="btn btn-primary btn-sm mr-2">Open Pharmacy Dashboard</a>
+      <?php else : ?>
+        <div class="alert alert-light border">
+          Your Unified account and business are set up. Dashboard access for your selected management
+          system is connected in a later phase; it is not available from this account yet.
+        </div>
+      <?php endif; ?>
 
       <a href="actions/logout.php" class="btn btn-outline-secondary btn-sm">Sign out</a>
     </div>

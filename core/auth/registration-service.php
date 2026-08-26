@@ -299,6 +299,31 @@ if (!function_exists('therain_register_tenant')) {
 
             $connection->commit();
 
+            if ($input['management_system'] === 'pharmacy') {
+                // Provisioned on a *separate* legacy connection (see
+                // management/pharmacy/compatibility/bridge-service.php), so
+                // it cannot share this transaction. Deliberately outside the
+                // transaction/catch above: a failure here must never roll
+                // back or fail an already-committed, otherwise-successful
+                // Unified registration. auth/actions/enter-pharmacy.php
+                // retries provisioning on demand if this did not run.
+                try {
+                    require_once dirname(__DIR__, 2) . '/management/pharmacy/compatibility/bridge-service.php';
+                    therain_pharmacy_provision_store($tenantId, $tenantUuid, array(
+                        'business_name' => trim($input['business_name']),
+                        'email' => !empty($input['business_email']) ? trim($input['business_email']) : trim($input['email']),
+                        'phone' => trim($input['business_phone']),
+                    ));
+                } catch (Throwable $provisionException) {
+                    // Not fatal to registration -- see comment above. Catches
+                    // Throwable, not just Exception, so a legacy-side fatal
+                    // (e.g. a pre-Phase-8 Pharmacy database missing the
+                    // p_tenant_bridge table) can never break registration --
+                    // proven necessary, not theoretical: see
+                    // docs/PHARMACY-AUTH-INTEGRATION.md.
+                }
+            }
+
             return array('success' => true, 'errors' => array(), 'tenant_id' => $tenantId, 'user_id' => $userId);
         } catch (Exception $exception) {
             $connection->rollback();

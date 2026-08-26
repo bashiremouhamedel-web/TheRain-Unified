@@ -205,3 +205,38 @@ if (!function_exists('therain_test_multi_query')) {
         return null;
     }
 }
+
+// A disposable database for anything that goes through config/db.php's
+// legacy Pharmacy connection during this run (currently: the Phase 8
+// auth-to-Pharmacy provisioning bridge, exercised by
+// tests/auth/AuthTest.php's pharmacy-flagged registration). Set via
+// THERAIN_PHARMACY_DB_OVERRIDE *before* any test file runs, so
+// config/db.php never has a chance to fall back to the real `pharmacy`
+// database during this process -- belt-and-suspenders on top of that
+// code's own try/catch (core/auth/registration-service.php,
+// auth/actions/enter-pharmacy.php), not a replacement for it. Must run
+// after the helper functions above are defined (it uses
+// therain_test_multi_query()).
+$pharmacyBridgeDatabaseName = $testDatabaseName . '_bridge';
+$adminConnection = new mysqli($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], '', (int) $dbConfig['port']);
+$adminConnection->query('DROP DATABASE IF EXISTS `' . $adminConnection->real_escape_string($pharmacyBridgeDatabaseName) . '`');
+$adminConnection->query('CREATE DATABASE `' . $adminConnection->real_escape_string($pharmacyBridgeDatabaseName) . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+$adminConnection->close();
+
+$pharmacySchemaSql = file_get_contents(THERAIN_APP_ROOT . '/management/pharmacy/database/db.sql');
+// Same redirect this file's own CREATE DATABASE/USE `pharmacy` statements
+// need everywhere else in this suite -- see tests/pharmacy/PharmacyTest.php.
+$pharmacySchemaSql = preg_replace('/`pharmacy`/', '`' . $pharmacyBridgeDatabaseName . '`', $pharmacySchemaSql);
+
+$pharmacyBridgeConnection = new mysqli($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], $pharmacyBridgeDatabaseName, (int) $dbConfig['port']);
+$pharmacyBridgeConnection->set_charset($dbConfig['charset']);
+$pharmacyImportError = therain_test_multi_query($pharmacyBridgeConnection, $pharmacySchemaSql);
+if ($pharmacyImportError !== null) {
+    fwrite(STDERR, "Failed to prepare the disposable Pharmacy bridge database: $pharmacyImportError\n");
+    exit(1);
+}
+$pharmacyBridgeConnection->close();
+
+putenv('THERAIN_PHARMACY_DB_OVERRIDE=' . $pharmacyBridgeDatabaseName);
+$_ENV['THERAIN_PHARMACY_DB_OVERRIDE'] = $pharmacyBridgeDatabaseName;
+$GLOBALS['therain_test_pharmacy_bridge_database_name'] = $pharmacyBridgeDatabaseName;

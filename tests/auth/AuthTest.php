@@ -3,6 +3,7 @@
 require_once THERAIN_APP_ROOT . '/core/auth/registration-service.php';
 require_once THERAIN_APP_ROOT . '/core/auth/auth-service.php';
 require_once THERAIN_APP_ROOT . '/core/auth/csrf.php';
+require_once THERAIN_APP_ROOT . '/management/pharmacy/compatibility/bridge-service.php';
 
 /**
  * Registers two tenants (A: XAF, B: USD) used by every later test file.
@@ -59,6 +60,17 @@ function therain_test_run_registration()
     $GLOBALS['therain_test_state']['userA'] = $resultA['user_id'];
     $GLOBALS['therain_test_state']['tenantB'] = $resultB['tenant_id'];
     $GLOBALS['therain_test_state']['userB'] = $resultB['user_id'];
+
+    // Phase 8: a pharmacy-flagged registration must provision a real,
+    // distinct legacy `store` row via the compatibility bridge -- see
+    // management/pharmacy/compatibility/bridge-service.php. This runs
+    // against the disposable database tests/bootstrap.php points
+    // THERAIN_PHARMACY_DB_OVERRIDE at, never the real `pharmacy` database.
+    $storeIdA = therain_pharmacy_store_id_for_tenant($resultA['tenant_id']);
+    $storeIdB = therain_pharmacy_store_id_for_tenant($resultB['tenant_id']);
+    therain_test_assert('tenant A got a bridged Pharmacy store', $storeIdA !== null);
+    therain_test_assert('tenant B got a bridged Pharmacy store', $storeIdB !== null);
+    therain_test_assert('tenant A and B got DIFFERENT stores', $storeIdA !== $storeIdB);
 }
 
 function therain_test_run_login()
