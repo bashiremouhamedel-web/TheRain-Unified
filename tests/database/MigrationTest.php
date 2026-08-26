@@ -19,13 +19,13 @@ function therain_test_run_migrations()
     $applied = $db->query('SELECT migration FROM schema_migrations ORDER BY migration ASC')->fetch_all(MYSQLI_ASSOC);
     $appliedNames = array_column($applied, 'migration');
     therain_test_assert(
-        'all three migrations recorded as applied',
-        $appliedNames === array('0001_initial_unified_schema.sql', '0002_identity_foundation.sql', '0003_financial_foundation.sql'),
+        'all four migrations recorded as applied',
+        $appliedNames === array('0001_initial_unified_schema.sql', '0002_identity_foundation.sql', '0003_financial_foundation.sql', '0004_pharmacy_permissions.sql'),
         json_encode($appliedNames)
     );
 
     $permissionCount = $db->query('SELECT COUNT(*) AS c FROM permissions')->fetch_assoc()['c'];
-    therain_test_assert('permission catalog has 31 rows', (int) $permissionCount === 31, "actual=$permissionCount");
+    therain_test_assert('permission catalog has 46 rows', (int) $permissionCount === 46, "actual=$permissionCount");
 
     $currencyCount = $db->query('SELECT COUNT(*) AS c FROM currencies')->fetch_assoc()['c'];
     therain_test_assert('currency catalog has 70 rows', (int) $currencyCount === 70, "actual=$currencyCount");
