@@ -212,7 +212,7 @@ if (!function_exists('therain_register_tenant')) {
         try {
             $tenantId = therain_create_tenant(array(
                 'business_name' => trim($input['business_name']),
-                'email' => trim($input['business_email']) !== '' ? trim($input['business_email']) : trim($input['email']),
+                'email' => (isset($input['business_email']) && trim($input['business_email']) !== '') ? trim($input['business_email']) : trim($input['email']),
                 'phone' => trim($input['business_phone']),
                 'timezone' => isset($input['timezone']) ? trim($input['timezone']) : null,
                 'currency_code' => isset($input['currency']) ? trim($input['currency']) : null,
