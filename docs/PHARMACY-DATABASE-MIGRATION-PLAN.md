@@ -144,3 +144,66 @@ workflows depend on it) as far as this repository's own history allows
 Conclusion unchanged: not safe to apply without also tracing how the
 pipe-delimited value (`id|name|qty|price|manufacturerprice`) is
 consumed client-side, which was not done this phase. Still not fixed.
+
+## Phase 8: the blocker resolved, and the fix applied
+
+Phase 7 left one specific question open: how is the pipe-delimited
+`id|name|qty|price|manufacturerprice` value (built by `add-damage.php`
+and read by `actions/cart.php`) actually consumed — by client-side
+JavaScript, as Phase 7 assumed but did not verify?
+
+**Answer, traced directly: it is never touched by JavaScript at all.**
+Both consumers are server-side PHP:
+
+- `add-damage.php`'s `<option value="...">` string is submitted as a
+  plain HTML form field (`name="product"`) via a normal POST, with no
+  JS handler on the form. `actions/damageProduct.php:14` reads it with
+  `explode('|', $product)` — positions 0–4 assigned to
+  `$id, $name, $stock, $price, $cost`. **The variable at position 4 is
+  already named `$cost`** in this unmodified legacy file, not
+  `$manufacturerprice` — independent evidence, written before this
+  investigation, that the original author already understood position 4
+  as "cost," matching `p_medicine.cost`.
+- `actions/cart.php`'s AJAX response feeds `$_SESSION['cart_item']`
+  directly (also PHP-only); the `'cost'` key is later read by
+  `actions/invoice.php` and `actions/purchaseInvoice.php` for total-cost
+  calculations — again no JavaScript involved.
+
+**A second, stronger piece of evidence found this phase:**
+`actions/cart-pos.php` — a live sibling of `actions/cart.php`, structured
+identically, actively called from `index.php`'s main POS "add to cart"
+flow (`index.php:516`, `:550`) — **already queries `p_medicine` and reads
+its `cost` column** (`'cost'=>$productByCode[0]["cost"]`) instead of
+`medicine`/`manufacturerprice`. This is not a hypothesis; it is a working
+implementation of the exact fix `cart.php` needed, present in the
+codebase the whole time as an unnoticed parallel correction.
+
+**A third confirmation:** `stock.php`'s live (uncommented) query already
+selects `p_medicine.cost` where an old, commented-out version of the same
+query once selected `medicine.manufacturerprice` — the codebase's own
+history shows this rename already happened everywhere except the two
+files Phase 4 originally flagged.
+
+**Reachability re-confirmed:** `actions/cart.php?action=add` is called
+from both `add-purchase.php:419` and `index.php:672` (the purchase-side
+"add to cart" flow, distinct from the POS sale cart which already uses
+`cart-pos.php`) — so this was not dead code; it is the live handler for
+adding a product to a purchase order.
+
+**Fix applied and proven against a real disposable database**
+(`therain_unified_pharmacy_test`, never the real `pharmacy` database):
+both files now query `p_medicine` and read `cost`. A real row was
+inserted, the corrected queries were run verbatim via the MariaDB CLI,
+confirmed to return the expected `cost` value with no error, and the row
+was removed afterward. `tests/pharmacy/PharmacyTest.php`'s own
+assertions (which test the schema fact, not these two files' source)
+are unaffected and still pass.
+
+- `add-damage.php:51,54` — `medicine` → `p_medicine`;
+  `$med_row['manufacturerprice']` → `$med_row['cost']`.
+- `actions/cart.php:9,15` — `medicine` → `p_medicine`;
+  `$productByCode[0]["manufacturerprice"]` → `$productByCode[0]["cost"]`.
+
+This closes the last open item from Phase 4/6/7's investigation. No
+schema change was required — both tables and columns already existed;
+only the two stale references were wrong.

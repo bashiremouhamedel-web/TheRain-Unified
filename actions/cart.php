@@ -6,13 +6,13 @@ if(!empty($_GET["action"])) {
     switch($_GET["action"]) {
       case "add":
         if(!empty($_GET["quantity"])) {
-          $productByCode = runQuery("SELECT * FROM `medicine` WHERE id='" . $_GET["code"] . "'");
+          $productByCode = runQuery("SELECT * FROM `p_medicine` WHERE id='" . $_GET["code"] . "'");
           $itemArray = array(
             $productByCode[0]["id"]=>array(
-              'name'=>$productByCode[0]["name"], 
-              'code'=>$productByCode[0]["id"], 
+              'name'=>$productByCode[0]["name"],
+              'code'=>$productByCode[0]["id"],
               'quantity'=>$_GET["quantity"],
-              'cost'=>$productByCode[0]["manufacturerprice"],
+              'cost'=>$productByCode[0]["cost"],
               'price'=>$productByCode[0]["price"], 
               'image'=>$productByCode[0]["img"]
             ));

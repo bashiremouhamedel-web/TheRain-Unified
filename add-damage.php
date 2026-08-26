@@ -48,10 +48,10 @@
                             <select class="form-control select2" name="product" required>
                               <option value="" selected="selected">Select a Product</option>
                               <?php
-                                $med_sql = $conn->query("SELECT * FROM `medicine` WHERE `store`='$_SESSION[store_id]'");
+                                $med_sql = $conn->query("SELECT * FROM `p_medicine` WHERE `store`='$_SESSION[store_id]'");
                                 while($med_row = mysqli_fetch_assoc($med_sql)){
                                     ?>
-                                      <option value="<?php echo $med_row['id'];?>|<?php echo $med_row['name'];?>|<?php echo $med_row['qty'];?>|<?php echo $med_row['price'];?>|<?php echo $med_row['manufacturerprice'];?>">
+                                      <option value="<?php echo $med_row['id'];?>|<?php echo $med_row['name'];?>|<?php echo $med_row['qty'];?>|<?php echo $med_row['price'];?>|<?php echo $med_row['cost'];?>">
                                         <?php echo $med_row['name']." ( ".$med_row['qty']." )"; ?></option>
                                 <?php } ?>
                            </select>
