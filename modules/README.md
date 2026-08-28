@@ -16,3 +16,8 @@ file yet; check `standalone_ready` before relying on it.
 The Pharmacy module remains at legacy root routes during the staged
 migration. Its registry entry records that compatibility state without
 changing how the application runs.
+
+Phase 10 adds `TheRainModuleInterface`, `TheRainModuleContext`, and
+manifest validation. These are adapters around the existing registry, not
+a replacement for it, so planned modules remain disabled and legacy routes
+remain operational.

@@ -98,6 +98,19 @@ same pattern `therain_payment_totals()` already proved safe. Still a
 design note, not code, for the same reason it was in Phase 7 — no second
 module and no cross-module product/customer table exist yet to search.
 
+## Phase 10 update
+
+**IMPLEMENTED + STATICALLY VERIFIED:** `management/pharmacy/module.php`
+implements the formal module contract. Its adapter registers a bounded
+Pharmacy search provider for products, customers, and suppliers. The
+provider resolves the legacy store through `p_tenant_bridge`, uses prepared
+store-scoped queries, and applies entity-specific view permissions for a
+Unified acting user. Legacy-only sessions fail closed for this new search
+path and existing legacy routes remain unchanged.
+
+**RUNTIME TEST BLOCKED:** disposable Pharmacy search queries and HTTP
+permission checks could not run because MariaDB refused `127.0.0.1:3306`.
+
 ## 8L — Audit
 
 **Started, for real, not just documented as a future item.** The one new
