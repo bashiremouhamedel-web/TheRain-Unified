@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 10 is **partially implemented**. The work is additive and preserves the legacy Pharmacy POS. Runtime database validation is **BLOCKED** because MariaDB is not listening on the configured `127.0.0.1:3306` endpoint.
+Phase 10 is **partially implemented**. The work is additive and preserves the legacy Pharmacy POS. Runtime database validation is **BLOCKED** because MariaDB is not listening on the configured `127.0.0.1:3306` endpoint. The Phase 11 continuation completes the adapter metadata and invoice search contract; it does not claim database runtime proof.
 
 ## Previous phase verification
 

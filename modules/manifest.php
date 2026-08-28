@@ -56,6 +56,8 @@ return array(
         'adapter' => 'management/pharmacy/module.php',
         'search_provider' => 'management/pharmacy/compatibility/search-service.php',
         'reporting_provider' => null,
+        'dashboard_entry' => 'auth/actions/enter-pharmacy.php',
+        'installation_requirements' => array('php' => '>=8.0', 'database' => 'mysql-or-mariadb'),
         'required_core_services' => array('auth', 'permissions', 'currency', 'payments', 'transactions', 'audit'),
         'capabilities' => array('products', 'customers', 'suppliers', 'purchases', 'sales', 'reports', 'printing'),
         'standalone_ready' => true,

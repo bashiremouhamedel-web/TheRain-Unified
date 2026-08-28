@@ -13,7 +13,7 @@ if (!function_exists('therain_validate_module_manifest')) {
         $errors = array();
         $requiredFields = array('name', 'slug', 'type', 'path', 'dependencies', 'permissions', 'routes', 'licensing');
         if (!empty($manifest['enabled'])) {
-            $requiredFields = array_merge($requiredFields, array('description', 'required_core_services', 'capabilities'));
+            $requiredFields = array_merge($requiredFields, array('description', 'required_core_services', 'capabilities', 'dashboard_entry', 'installation_requirements'));
         }
 
         foreach ($requiredFields as $field) {

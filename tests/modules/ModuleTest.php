@@ -25,6 +25,9 @@ function therain_test_run_module_registry()
     $pharmacyAdapter = therain_module_adapter('pharmacy');
     therain_test_assert('enabled Pharmacy loads a formal module adapter', $pharmacyAdapter instanceof TheRainModuleInterface);
     therain_test_assert('Pharmacy adapter exposes the registered Pharmacy manifest', $pharmacyAdapter->manifest()['slug'] === 'pharmacy');
+    $pharmacyManifest = $pharmacyAdapter->manifest();
+    therain_test_assert('Pharmacy manifest declares dashboard and installation metadata', $pharmacyManifest['dashboard_entry'] === 'auth/actions/enter-pharmacy.php' && isset($pharmacyManifest['installation_requirements']));
+    therain_test_assert('Pharmacy manifest declares shared service dependencies', in_array('transactions', $pharmacyManifest['required_core_services'], true) && in_array('audit', $pharmacyManifest['required_core_services'], true));
     therain_activate_module('pharmacy', $context);
     $searchProviders = therain_search_provider_registry();
     therain_test_assert('Pharmacy adapter registers its search provider', isset($searchProviders['pharmacy']));

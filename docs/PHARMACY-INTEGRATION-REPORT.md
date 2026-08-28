@@ -111,6 +111,12 @@ path and existing legacy routes remain unchanged.
 **RUNTIME TEST BLOCKED:** disposable Pharmacy search queries and HTTP
 permission checks could not run because MariaDB refused `127.0.0.1:3306`.
 
+The formal Pharmacy adapter now declares its dashboard entry, installation
+requirements, required CORE services, capabilities, search provider, and
+standalone/unified status through the module manifest. Search results also
+include a safe legacy route and a simple prefix relevance value; no secret
+or unrestricted table input is returned.
+
 ## 8L — Audit
 
 **Started, for real, not just documented as a future item.** The one new

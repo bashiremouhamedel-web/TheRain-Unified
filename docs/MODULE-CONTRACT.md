@@ -6,7 +6,7 @@
 
 ## Required metadata
 
-A module manifest provides an id/slug, name, type, version/status, filesystem path, standalone database path, migrations, dependencies, permissions, routes, licensing metadata, and standalone/unified readiness flags. Planned modules may reserve paths but must remain disabled and not claim readiness.
+A module manifest provides an id/slug, name, type, version/status, filesystem path, standalone database path, migrations, dependencies, permissions, routes, search/reporting providers, dashboard entry, installation requirements, required CORE services, capabilities, licensing metadata, and standalone/unified readiness flags. Planned modules may reserve paths but must remain disabled and not claim readiness.
 
 ## Runtime contract
 

@@ -31,13 +31,14 @@ if (!function_exists('therain_pharmacy_search')) {
         $results = array();
 
         $providers = array(
-            array('p_medicine', 'id', 'name', 'code', 'product', 'pharmacy.products.view'),
-            array('p_customer', 'id', 'name', 'phone', 'customer', 'pharmacy.customers.view'),
-            array('p_supplier', 'id', 'name', 'phone', 'supplier', 'pharmacy.suppliers.view'),
+            array('p_medicine', 'id', 'name', 'code', 'product', 'pharmacy.products.view', 'manage-products.php'),
+            array('p_customer', 'id', 'name', 'phone', 'customer', 'pharmacy.customers.view', 'manage-customer.php'),
+            array('p_supplier', 'id', 'name', 'phone', 'supplier', 'pharmacy.suppliers.view', 'manage-supplier.php'),
+            array('p_invoice_summary', 'id', 'invoice', 'client', 'invoice', 'pharmacy.sales.view', 'sales-invoice.php'),
         );
 
         foreach ($providers as $provider) {
-            list($table, $idColumn, $nameColumn, $secondaryColumn, $entityType, $permission) = $provider;
+            list($table, $idColumn, $nameColumn, $secondaryColumn, $entityType, $permission, $route) = $provider;
             if ($actorId !== null && !therain_pharmacy_actor_can($storeId, $actorId, $permission)) {
                 continue;
             }
@@ -58,6 +59,8 @@ if (!function_exists('therain_pharmacy_search')) {
                     'entity_id' => (int) $row['entity_id'],
                     'label' => $row['label'],
                     'secondary' => $row['secondary_value'],
+                    'url' => $route,
+                    'relevance' => stripos((string) $row['label'], (string) $query) === 0 ? 1.0 : 0.5,
                 );
             }
             $statement->close();
