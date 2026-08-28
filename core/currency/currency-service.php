@@ -108,6 +108,21 @@ if (!function_exists('therain_format_currency')) {
     }
 }
 
+if (!function_exists('therain_format_money')) {
+    /**
+     * Stable money-formatting alias for modules and templates.
+     *
+     * @param float $amount
+     * @param array|string $currency
+     * @param mysqli|null $connection
+     * @return string
+     */
+    function therain_format_money($amount, $currency, mysqli $connection = null)
+    {
+        return therain_format_currency($amount, $currency, $connection);
+    }
+}
+
 if (!function_exists('therain_tenant_default_currency')) {
     /**
      * Returns the tenant's base/default currency row.
@@ -427,5 +442,22 @@ if (!function_exists('therain_convert_amount')) {
             'rate' => (float) $rate['rate'],
             'effective_at' => $rate['effective_at'],
         );
+    }
+}
+
+if (!function_exists('therain_convert_currency')) {
+    /**
+     * Explicitly named alias for display/reporting conversion. Stored
+     * transaction amounts and currencies are never changed by conversion.
+     *
+     * @param float $amount
+     * @param int $fromCurrencyId
+     * @param int $toCurrencyId
+     * @param mysqli|null $connection
+     * @return array|null
+     */
+    function therain_convert_currency($amount, $fromCurrencyId, $toCurrencyId, mysqli $connection = null)
+    {
+        return therain_convert_amount($amount, $fromCurrencyId, $toCurrencyId, $connection);
     }
 }
