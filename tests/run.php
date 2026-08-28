@@ -47,7 +47,10 @@ $testFiles = array(
     __DIR__ . '/permissions/PermissionTest.php',
     __DIR__ . '/currency/CurrencyTest.php',
     __DIR__ . '/payments/PaymentTest.php',
+    __DIR__ . '/audit/AuditTest.php',
+    __DIR__ . '/transactions/TransactionTest.php',
     __DIR__ . '/pharmacy/PharmacyTest.php',
+    __DIR__ . '/pharmacy/EmployeeIdentityTest.php',
     __DIR__ . '/database/DbumiConsistencyTest.php',
 );
 
@@ -73,7 +76,10 @@ $testRuns = array(
     'therain_test_run_cashier_shift',
     'therain_test_run_reporting',
     'therain_test_run_audit_trail',
+    'therain_test_run_audit',
+    'therain_test_run_transactions',
     'therain_test_run_pharmacy_schema',
+    'therain_test_run_pharmacy_employee_identity',
     'therain_test_run_dbumi_consistency',
 );
 

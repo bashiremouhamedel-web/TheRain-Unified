@@ -87,6 +87,16 @@ session_id('');
 session_name('PHPSESSID');
 session_start();
 $_SESSION['store_id'] = $storeId;
+
+// Phase 9 employee identity bridge (docs/PHARMACY-EMPLOYEE-IDENTITY.md):
+// a namespaced key, deliberately not touching any existing legacy session
+// variable, carrying *which* Unified user is acting within this store
+// session. Nothing in the legacy app reads this today -- it is additive,
+// proven correct by tests/, and available for a future, separately-staged
+// pass to build real per-employee permission checks/audit attribution on
+// top of, without requiring another session-bridge change when that
+// happens.
+$_SESSION['therain_acting_user_id'] = $user['id'];
 session_write_close();
 
 header('Location: ../../index.php');

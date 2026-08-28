@@ -71,6 +71,7 @@ function therain_test_run_dbumi_consistency()
         'user_currency_preferences', 'exchange_rates', 'tenant_payment_methods',
         'branch_payment_methods', 'payment_method_currencies', 'cashier_shifts',
         'payments', 'payment_refunds', 'financial_settings',
+        'transactions', 'transaction_state_history',
     );
 
     $migrationDb = therain_test_db();

@@ -60,6 +60,11 @@ the currency row — never a hardcoded `"$" . $amount` or
 `$amount . " FCFA"`. Every future module and dashboard card should call
 this, not format currency itself.
 
+`therain_format_money()` is the stable module-facing alias for the same
+formatter. `therain_convert_currency()` is the explicit display/reporting
+alias for `therain_convert_amount()`; neither function changes stored
+transaction amounts or their original currency.
+
 ## Multi-currency and conversion
 
 `payments.base_currency_id` / `base_amount` / `exchange_rate` /

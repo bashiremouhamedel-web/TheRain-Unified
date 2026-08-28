@@ -20,6 +20,8 @@
 // will actually look"), including the tenant<->store mapping table itself
 // (`p_tenant_bridge`, in the Pharmacy schema, not a CORE table).
 
+require_once __DIR__ . '/../../../core/permissions/permission-service.php';
+
 if (!function_exists('therain_pharmacy_connection')) {
     /**
      * Returns a mysqli connection to whatever database the legacy Pharmacy
@@ -172,5 +174,97 @@ if (!function_exists('therain_pharmacy_store_id_for_tenant')) {
         $statement->close();
 
         return $row ? (int) $row['store_id'] : null;
+    }
+}
+
+if (!function_exists('therain_pharmacy_tenant_for_store')) {
+    /**
+     * The reverse lookup of therain_pharmacy_store_id_for_tenant(): given a
+     * legacy store_id (e.g. $_SESSION['store_id'], the one thing every
+     * legacy page already has), returns the bridged tenant's id and uuid,
+     * or null if this store was never provisioned through Unified
+     * registration (the common case for a pre-Unified, legacy-only store,
+     * which must keep working exactly as before -- see
+     * docs/CURRENCY-ARCHITECTURE.md's Pharmacy compatibility section).
+     *
+     * @param int $storeId
+     * @return array{tenant_id:int, tenant_uuid:string}|null
+     */
+    function therain_pharmacy_tenant_for_store($storeId)
+    {
+        $legacyConnection = therain_pharmacy_connection();
+
+        $statement = $legacyConnection->prepare('SELECT tenant_id, tenant_uuid FROM `p_tenant_bridge` WHERE store_id = ? AND tenant_id IS NOT NULL LIMIT 1');
+        $statement->bind_param('i', $storeId);
+        $statement->execute();
+        $row = $statement->get_result()->fetch_assoc();
+        $statement->close();
+
+        return $row ? array('tenant_id' => (int) $row['tenant_id'], 'tenant_uuid' => $row['tenant_uuid']) : null;
+    }
+}
+
+// --- Phase 9: Pharmacy employee identity (docs/PHARMACY-EMPLOYEE-IDENTITY.md) ---
+//
+// No new identity table was needed for this: a "Pharmacy employee" is
+// simply a Unified user whose tenant_id owns the bridged store (via
+// p_tenant_bridge, above) -- that chain already exists in full through
+// existing tables (users.tenant_id, p_tenant_bridge.tenant_id). What was
+// actually missing, and what this section adds, is (1) a way for the
+// legacy session to know *which* Unified user is acting
+// (auth/actions/enter-pharmacy.php sets $_SESSION['therain_acting_user_id']
+// on the legacy session) and (2) a way to check that user's real,
+// tenant-scoped permission using the existing, unmodified Phase 3
+// permission engine -- never a second, Pharmacy-specific permission model.
+
+if (!function_exists('therain_pharmacy_current_actor_id')) {
+    /**
+     * The Unified user id acting within the current legacy session, if the
+     * legacy session was reached through the Unified bridge. Returns null
+     * for every legacy-only session (login.php directly) -- unchanged,
+     * pre-Phase-9 behavior for those.
+     *
+     * @return int|null
+     */
+    function therain_pharmacy_current_actor_id()
+    {
+        return isset($_SESSION['therain_acting_user_id']) ? (int) $_SESSION['therain_acting_user_id'] : null;
+    }
+}
+
+if (!function_exists('therain_pharmacy_actor_can')) {
+    /**
+     * Checks whether a specific acting Unified user holds a specific
+     * Pharmacy permission, resolved through the real tenant the store is
+     * bridged to. Returns false (never true) if the store has no bridge,
+     * or the user does not belong to that tenant -- a legacy-only store or
+     * a cross-tenant user can never pass this check.
+     *
+     * This function is available for legacy pages to opt into; per
+     * docs/PHARMACY-PERMISSION-INTEGRATION.md's established, honest
+     * status, no legacy page calls it yet -- wiring the ~80 existing pages
+     * through it is separately-staged future work, not silently implied
+     * done by this function's existence.
+     *
+     * @param int $storeId
+     * @param int $actorUserId
+     * @param string $permissionSlug e.g. 'pharmacy.products.delete'
+     * @return bool
+     */
+    function therain_pharmacy_actor_can($storeId, $actorUserId, $permissionSlug)
+    {
+        $legacyConnection = therain_pharmacy_connection();
+
+        $statement = $legacyConnection->prepare('SELECT tenant_id FROM `p_tenant_bridge` WHERE store_id = ? AND tenant_id IS NOT NULL LIMIT 1');
+        $statement->bind_param('i', $storeId);
+        $statement->execute();
+        $row = $statement->get_result()->fetch_assoc();
+        $statement->close();
+
+        if ($row === null) {
+            return false;
+        }
+
+        return therain_user_has_permission($actorUserId, (int) $row['tenant_id'], $permissionSlug);
     }
 }

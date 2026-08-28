@@ -41,8 +41,52 @@
 	// System Settings
 	define('SYSTEM_TIMEZONE', 'Africa/Douala');
 	define('SYSTEM_COUNTRY', 'Cameroon');
-	define('SYSTEM_CURRENCY', 'XAF');
-	define('SYSTEM_CURRENCY_SYMBOL', 'FCFA');
+
+	// Phase 9 currency compatibility bridge (see docs/CURRENCY-ARCHITECTURE.md).
+	// SYSTEM_CURRENCY/SYSTEM_CURRENCY_SYMBOL default to the original,
+	// unconditional Cameroon values below -- unchanged for every legacy
+	// store that was never provisioned through Unified registration, and
+	// for every Standalone Pharmacy deployment that has no core/ directory
+	// at all (checked via is_file() before ever requiring a CORE file, so
+	// a standalone package missing core/ entirely still works exactly as
+	// before). Only a session with a bridged store_id, on a machine where
+	// the CORE files are actually present and reachable, can change this --
+	// and any failure at any step (no bridge row, CORE database
+	// unreachable, tenant has no currency set) falls back to the same
+	// unconditional default silently, never a fatal error.
+	$therainSystemCurrency = 'XAF';
+	$therainSystemCurrencySymbol = 'FCFA';
+
+	if (isset($_SESSION['store_id'])) {
+		$therainBridgeServicePath = dirname(__DIR__) . '/management/pharmacy/compatibility/bridge-service.php';
+		$therainCurrencyServicePath = dirname(__DIR__) . '/core/currency/currency-service.php';
+
+		if (is_file($therainBridgeServicePath) && is_file($therainCurrencyServicePath)) {
+			try {
+				require_once $therainBridgeServicePath;
+				require_once $therainCurrencyServicePath;
+
+				$therainBridgedTenant = therain_pharmacy_tenant_for_store((int) $_SESSION['store_id']);
+
+				if ($therainBridgedTenant !== null) {
+					$therainTenantCurrency = therain_tenant_default_currency($therainBridgedTenant['tenant_id']);
+
+					if ($therainTenantCurrency !== null) {
+						$therainSystemCurrency = $therainTenantCurrency['code'];
+						$therainSystemCurrencySymbol = !empty($therainTenantCurrency['symbol'])
+							? $therainTenantCurrency['symbol']
+							: $therainTenantCurrency['code'];
+					}
+				}
+			} catch (Throwable $therainCurrencyBridgeException) {
+				// Fall back to the Cameroon defaults set above -- see the
+				// doc comment on this block for why this must never be fatal.
+			}
+		}
+	}
+
+	define('SYSTEM_CURRENCY', $therainSystemCurrency);
+	define('SYSTEM_CURRENCY_SYMBOL', $therainSystemCurrencySymbol);
 	
 	// Cameroon Payment Methods
 	define('PAYMENT_METHODS', array(
