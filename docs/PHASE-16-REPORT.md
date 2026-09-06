@@ -132,7 +132,7 @@ Permission guard, Pharmacy dashboard/sales routes, staged Pharmacy route/action 
 See `git rev-parse HEAD` after publication.
 
 ## Push
-Pending publication.
+PASS: pushed to `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main`.
 
 ## Final Status
 PARTIAL. Focused permission compatibility, route enforcement, currency display wiring, PHP lint, migration status, dbumi verification, and production safety checks completed. Full real-data Pharmacy workflows and authenticated browser validation remain blocked.
