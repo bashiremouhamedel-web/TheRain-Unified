@@ -70,6 +70,10 @@
 
 				if ($therainBridgedTenant !== null) {
 					$therainTenantCurrency = therain_tenant_default_currency($therainBridgedTenant['tenant_id']);
+					$therainActingUserId = isset($_SESSION['therain_acting_user_id']) ? (int) $_SESSION['therain_acting_user_id'] : 0;
+					if ($therainActingUserId > 0) {
+						$therainTenantCurrency = therain_user_currency_preference($therainActingUserId, $therainBridgedTenant['tenant_id']);
+					}
 
 					if ($therainTenantCurrency !== null) {
 						$therainSystemCurrency = $therainTenantCurrency['code'];

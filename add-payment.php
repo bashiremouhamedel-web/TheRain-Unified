@@ -6,6 +6,8 @@
   }else{
     include('config/db.php');
   }
+  require_once __DIR__ . '/core/permissions/legacy-route-guard.php';
+  therain_require_pharmacy_permission('pharmacy.payments.receive');
 ?>
 <!DOCTYPE html>
 <html lang="en">

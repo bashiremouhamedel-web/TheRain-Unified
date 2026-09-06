@@ -6,6 +6,8 @@
 	}else{
         include('config/db.php');
 	}
+  require_once __DIR__ . '/core/permissions/legacy-route-guard.php';
+  therain_require_pharmacy_permission('pharmacy.sales.create');
     // include('actions/cart-pos.php');
 //   include('actions/cart.php');
 ?>

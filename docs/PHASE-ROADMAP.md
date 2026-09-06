@@ -17,7 +17,7 @@
 - [ ] Phase 13 — Additional management systems.
 - [ ] Phase 14 — Shared barcode, QR code, and printing services.
 - [ ] Phase 15 — Shared authenticated dashboard shell, tenant identity, permission-aware navigation, notifications, search, currency display, audit integration, and Pharmacy compatibility. Partial implementation recorded in docs/PHASE-15-REPORT.md; authenticated browser and full runtime regression remain blocked.
-- [ ] Phase 16 — Notifications and communication integrations (foundation already verified in Phase 7 — see docs/PHASE-7-REPORT.md — a service layer and UI are what remain).
+- [ ] Phase 16 — CORE-to-Pharmacy integration, tenant bridge, employee identity, server-side Pharmacy permission guards, currency display wiring, and compatibility verification. Partial implementation recorded in docs/PHASE-16-REPORT.md; authenticated workflow validation remains blocked.
 - [ ] Phase 17 — Provider-neutral AI analytics services.
 - [ ] Phase 18 — Licensing and edition packaging.
 - [ ] Phase 19 — Operational installer.

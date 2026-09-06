@@ -3,6 +3,7 @@
 require_once THERAIN_APP_ROOT . '/core/users/user-service.php';
 require_once THERAIN_APP_ROOT . '/core/permissions/permission-service.php';
 require_once THERAIN_APP_ROOT . '/management/pharmacy/compatibility/bridge-service.php';
+require_once THERAIN_APP_ROOT . '/core/permissions/legacy-route-guard.php';
 
 /**
  * Proves the Phase 9 employee identity chain end to end:
@@ -61,6 +62,18 @@ function therain_test_run_pharmacy_employee_identity()
         'the SAME restricted employee CANNOT act on a permission they were never granted',
         therain_pharmacy_actor_can($storeIdA, $cashierUserId, 'pharmacy.products.delete') === false
     );
+
+    $_SESSION['store_id'] = $storeIdA;
+    $_SESSION['therain_acting_user_id'] = $cashierUserId;
+    therain_test_assert(
+        'route guard allows a restricted employee on an explicitly granted permission',
+        therain_pharmacy_permission_granted('pharmacy.sales.view') === true
+    );
+    therain_test_assert(
+        'route guard denies a restricted employee on an ungranted permission',
+        therain_pharmacy_permission_granted('pharmacy.products.delete') === false
+    );
+    unset($_SESSION['store_id']);
 
     // --- Cross-tenant isolation: tenant B's user must never pass a check on tenant A's store ---
     $userB = $GLOBALS['therain_test_state']['userB'];

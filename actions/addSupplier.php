@@ -7,6 +7,8 @@ if(!isset($_POST['submit'])){
 
     session_start();
     include('../config/db.php');
+    require_once __DIR__ . '/../core/permissions/legacy-route-guard.php';
+    therain_require_pharmacy_permission('pharmacy.suppliers.view');
 
     $chk = 0;
     $name = $conn->real_escape_string($_POST['name']);   //required

@@ -5,6 +5,8 @@ if(!isset($_POST['return_to_customer'])){
 }else{
     session_start();
     include('../config/db.php');
+    require_once __DIR__ . '/../core/permissions/legacy-route-guard.php';
+    therain_require_pharmacy_permission('pharmacy.sales.view');
 
     $store = $_SESSION['store_id'];
     $re_invoice = $conn->real_escape_string($_POST['re_invoice']);
