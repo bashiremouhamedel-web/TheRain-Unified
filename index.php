@@ -279,7 +279,7 @@
               </form>
               <div class="row">
                   <?php
-                    $cm = runQuery("SELECT * FROM `medicine` WHERE `store` = 'admin_62b'");
+                    $cm = runQuery("SELECT * FROM `p_medicine` WHERE `store` = '$_SESSION[store_id]'");
                     foreach($cm as $v){
                   ?>
                   <div class="col-md-4 col-sm-6 mt-3">
@@ -288,7 +288,7 @@
                               <a href="#" class="image">
                                   <img src="dist/img/product/bonsil.jpg">
                               </a>
-                              <?php if($v['discount'] > '0'){ ?>
+                              <?php if(isset($v['discount']) && $v['discount'] > '0'){ ?>
                               <span class="product-hot-label">5%</span>
                               <?php } ?>
                               <ul class="product-links">

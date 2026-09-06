@@ -38,11 +38,13 @@ if (!function_exists('therain_pharmacy_connection')) {
             return $connection;
         }
 
+        global $conn;
+
         // config/db.php declares top-level functions with no
         // function_exists guard, so it must only ever be loaded once per
         // request. This bridge is always the first and only loader.
         $legacyConfigPath = dirname(__DIR__, 3) . '/config/db.php';
-        require $legacyConfigPath;
+        require_once $legacyConfigPath;
 
         /** @var mysqli $conn set by config/db.php */
         $connection = $conn;

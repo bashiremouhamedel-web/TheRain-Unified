@@ -85,8 +85,8 @@ if (!isset($_SESSION['store_id'])) {
                       <?php
                       $n = 0;
                       // $sql = $conn->query("SELECT `name` FROM `medicine` WHERE `store`='$_SESSION[store_id]'");
-                      $sql = $conn->query("SELECT a.img, a.name, a.manufacturerprice, a.price, a.qty, (a.qty*a.price) as sellvalue, b.category FROM medicine_category as b 
-                      inner join medicine as a on (b.id = a.category and a.store='$_SESSION[store_id]')");
+                      $sql = $conn->query("SELECT a.img, a.name, a.cost, a.price, a.qty, (a.qty*a.price) as sellvalue, b.name AS category FROM p_medicine_category as b
+                      inner join p_medicine as a on (b.id = a.category and a.store='$_SESSION[store_id]')");
                       while($row = mysqli_fetch_assoc($sql)){
                         $sql2 = mysqli_fetch_assoc($conn->query("SELECT sum(qty) as total FROM `invoice` where `product` = '$row[name]' GROUP BY 'qty'"));
                       ?>
@@ -97,7 +97,7 @@ if (!isset($_SESSION['store_id'])) {
                         </td>
                         <td> <?php echo $row['name']; ?></td>
                         <td> <?php echo $row['category']; ?></td>
-                        <td> <?php echo $row['manufacturerprice']; ?> </td>
+                        <td> <?php echo $row['cost']; ?> </td>
                         <td> <?php echo $row['price']; ?> </td>
                         <td> <?php echo isset($sql2['total']) ? $sql2['total'] : 0; ?> </td>
                         <td><strong> <?php echo $row['qty']; ?> </strong></td>

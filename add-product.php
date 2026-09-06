@@ -61,7 +61,7 @@
                           <select class="form-control select2" name="brand_product">
                           <option value="" selected="selected">Select Type</option>
                             <?php
-                              $sql = $conn->query("SELECT * FROM `manufacturer` WHERE `store` = '$_SESSION[store_id]'");
+                              $sql = $conn->query("SELECT * FROM `p_brand` WHERE `store` = '$_SESSION[store_id]'");
                               while($row = mysqli_fetch_assoc($sql)){
                             ?>
                             <option class="text-capitalize" value="<?php echo $row['id']; ?>"><?php echo ucfirst($row['name']); ?></option>
@@ -78,10 +78,10 @@
                         <select class="form-control select2" name="category_product">
                           <option value="" selected="selected">Select Type</option>
                           <?php
-                            $sql = $conn->query("SELECT * FROM `medicine_category` WHERE `store` = '$_SESSION[store_id]'");
+                            $sql = $conn->query("SELECT * FROM `p_medicine_category` WHERE `store` = '$_SESSION[store_id]'");
                             while($row = mysqli_fetch_assoc($sql)){
                           ?>
-                          <option class="text-capitalize" value="<?php echo $row['id']; ?>"><?php echo ucfirst($row['category']); ?></option>
+                          <option class="text-capitalize" value="<?php echo $row['id']; ?>"><?php echo ucfirst($row['name']); ?></option>
                           <?php
                             }
                           ?>
