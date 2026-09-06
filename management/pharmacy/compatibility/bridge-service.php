@@ -258,6 +258,9 @@ if (!function_exists('therain_pharmacy_actor_can')) {
         $legacyConnection = therain_pharmacy_connection();
 
         $statement = $legacyConnection->prepare('SELECT tenant_id FROM `p_tenant_bridge` WHERE store_id = ? AND tenant_id IS NOT NULL LIMIT 1');
+        if (!$statement) {
+            return false;
+        }
         $statement->bind_param('i', $storeId);
         $statement->execute();
         $row = $statement->get_result()->fetch_assoc();
