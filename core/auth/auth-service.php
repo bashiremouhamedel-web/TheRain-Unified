@@ -44,7 +44,7 @@ if (!function_exists('therain_authenticate_user')) {
     function therain_authenticate_user($email, $password, mysqli $connection = null)
     {
         $connection = $connection ?: therain_db();
-        $user = therain_find_user_by_email($email, $connection);
+        $user = therain_find_user_by_identity($email, $connection);
 
         if (!$user || $user['status'] !== 'active' || empty($user['password_hash'])) {
             return null;
@@ -138,9 +138,10 @@ if (!function_exists('therain_current_user')) {
         }
 
         $connection = $connection ?: therain_db();
-        $statement = $connection->prepare('SELECT * FROM users WHERE id = ? AND status = "active" LIMIT 1');
+        $statement = $connection->prepare('SELECT * FROM users WHERE id = ? AND tenant_id = ? AND status = "active" LIMIT 1');
         $userId = (int) $_SESSION['therain_user_id'];
-        $statement->bind_param('i', $userId);
+        $tenantId = isset($_SESSION['therain_tenant_id']) ? (int) $_SESSION['therain_tenant_id'] : 0;
+        $statement->bind_param('ii', $userId, $tenantId);
         $statement->execute();
         $user = $statement->get_result()->fetch_assoc();
         $statement->close();

@@ -28,6 +28,7 @@ function therain_test_run_registration()
         'timezone' => 'Africa/Douala',
         'locale' => 'en',
         'management_system' => 'pharmacy',
+        'terms_consent' => '1',
     );
     $resultA = therain_register_tenant($inputA, array(), $db);
     therain_test_assert('tenant A registered', $resultA['success'], json_encode($resultA['errors']));
@@ -45,6 +46,7 @@ function therain_test_run_registration()
         'timezone' => 'UTC',
         'locale' => 'en',
         'management_system' => 'pharmacy',
+        'terms_consent' => '1',
     );
     $resultB = therain_register_tenant($inputB, array(), $db);
     therain_test_assert('tenant B registered', $resultB['success'], json_encode($resultB['errors']));

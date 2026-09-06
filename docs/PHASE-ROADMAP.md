@@ -16,7 +16,7 @@
 - [ ] Phase 12 — Hospital management module.
 - [ ] Phase 13 — Additional management systems.
 - [ ] Phase 14 — Shared barcode, QR code, and printing services.
-- [ ] Phase 15 — Accounting/ledger foundation over the Phase 5 payments tables (the payment-method/transaction foundation itself was delivered in Phase 5).
+- [ ] Phase 15 — Shared authenticated dashboard shell, tenant identity, permission-aware navigation, notifications, search, currency display, audit integration, and Pharmacy compatibility. Partial implementation recorded in docs/PHASE-15-REPORT.md; authenticated browser and full runtime regression remain blocked.
 - [ ] Phase 16 — Notifications and communication integrations (foundation already verified in Phase 7 — see docs/PHASE-7-REPORT.md — a service layer and UI are what remain).
 - [ ] Phase 17 — Provider-neutral AI analytics services.
 - [ ] Phase 18 — Licensing and edition packaging.
