@@ -117,8 +117,14 @@ if (!function_exists('therain_dashboard_render')) {
       <span><strong><?php echo therain_dashboard_escape($businessName); ?></strong><small><?php echo therain_dashboard_escape($moduleName); ?></small></span>
     </a>
     <nav aria-label="Main navigation"><ul>
-      <?php foreach ($navigation as $item) : ?><li><a href="<?php echo therain_dashboard_escape($base . ltrim($item['route'], '/')); ?>" title="<?php echo therain_dashboard_escape($item['label']); ?>"><i class="<?php echo therain_dashboard_escape($item['icon'] ?? 'fas fa-circle'); ?>"></i><span><?php echo therain_dashboard_escape($item['label']); ?></span></a></li><?php endforeach; ?>
+      <?php $lastNavigationGroup = null; foreach ($navigation as $item) :
+          $label = strtolower($item['label']);
+          $group = in_array($label, array('dashboard', 'notifications'), true) ? 'Main' : (in_array($label, array('pos', 'sales', 'returns'), true) ? 'Sales' : (in_array($label, array('products', 'add product', 'stock', 'damage'), true) ? 'Products & inventory' : (in_array($label, array('purchases', 'suppliers'), true) ? 'Purchasing' : (in_array($label, array('payments', 'expenses'), true) ? 'Finance' : (in_array($label, array('reports'), true) ? 'Reports' : 'Customers')))));
+          if ($group !== $lastNavigationGroup) : ?><li class="shell-nav-heading"><?php echo therain_dashboard_escape($group); ?></li><?php $lastNavigationGroup = $group; endif; ?>
+        <li><a class="<?php echo (strpos($_SERVER['REQUEST_URI'] ?? '', '/' . ltrim($item['route'], '/')) !== false) ? 'is-active' : ''; ?>" href="<?php echo therain_dashboard_escape($base . ltrim($item['route'], '/')); ?>" title="<?php echo therain_dashboard_escape($item['label']); ?>"><i class="<?php echo therain_dashboard_escape($item['icon'] ?? 'fas fa-circle'); ?>"></i><span><?php echo therain_dashboard_escape($item['label']); ?></span></a></li>
+      <?php endforeach; ?>
     </ul></nav>
+    <div class="shell-sidebar-footer"><strong>TheRain Unified</strong><small><?php echo therain_dashboard_escape($moduleName); ?></small><small>v16.7</small></div>
     <a class="shell-logout" href="<?php echo $base; ?>auth/actions/logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
   </aside>
   <main class="shell-main"><div class="shell-content"><?php echo $content; ?></div></main>
