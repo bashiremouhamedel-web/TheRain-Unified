@@ -61,8 +61,8 @@ if (!function_exists('therain_audit_log')) {
                 previous_values, new_values, ip_address, user_agent, result, metadata, created_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
         );
-        $statement->bind_param(
-            'iiisssisssssss',
+
+        $bindValues = array(
             $tenantId,
             $branchId,
             $userId,
@@ -75,8 +75,19 @@ if (!function_exists('therain_audit_log')) {
             $ipAddress,
             $userAgent,
             $result,
-            $metadata
+            $metadata,
         );
+        $types = '';
+        foreach ($bindValues as $value) {
+            if ($value === null) {
+                $types .= 's';
+                continue;
+            }
+
+            $types .= is_int($value) ? 'i' : 's';
+        }
+
+        $statement->bind_param($types, ...$bindValues);
         $statement->execute();
         $id = $connection->insert_id;
         $statement->close();

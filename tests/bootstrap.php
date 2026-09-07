@@ -33,7 +33,9 @@ if ($testDatabaseName === false || $testDatabaseName === '') {
     $testDatabaseName = 'therain_unified_phpunit_test';
 }
 
-if (strpos($testDatabaseName, 'test') === false) {
+if (strpos($testDatabaseName, 'test') === false
+    || in_array(strtolower($testDatabaseName), array('pharmacy', 'production', 'prod', 'live'), true)
+) {
     fwrite(STDERR, "Refusing to run: THERAIN_TEST_DATABASE ('$testDatabaseName') does not contain 'test'.\n");
     fwrite(STDERR, "This is a hard safety check — the suite must never be pointed at a real database.\n");
     exit(1);
@@ -101,6 +103,24 @@ $GLOBALS['therain_test_database_name'] = $testDatabaseName;
 $GLOBALS['therain_test_pass'] = 0;
 $GLOBALS['therain_test_fail'] = 0;
 $GLOBALS['therain_test_failures'] = array();
+$GLOBALS['therain_test_last_group'] = null;
+
+if (!function_exists('therain_test_trace')) {
+    function therain_test_trace($event, $name)
+    {
+        $line = sprintf(
+            "[%s] [TEST] %s %s pid=%d memory=%d last=%s\n",
+            date('c'),
+            $name,
+            $event,
+            getmypid(),
+            memory_get_usage(true),
+            $GLOBALS['therain_test_last_group'] ?: 'none'
+        );
+        $tracePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'therain-test-trace.log';
+        file_put_contents($tracePath, $line, FILE_APPEND | LOCK_EX);
+    }
+}
 
 if (!function_exists('therain_test_db')) {
     /**

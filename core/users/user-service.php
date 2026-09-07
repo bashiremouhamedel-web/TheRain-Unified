@@ -60,6 +60,28 @@ if (!function_exists('therain_find_user_by_email')) {
     }
 }
 
+if (!function_exists('therain_find_user_by_identity')) {
+    /**
+     * Finds a user by the email or username accepted by the auth form.
+     *
+     * @param string $identity
+     * @param mysqli|null $connection
+     * @return array|null
+     */
+    function therain_find_user_by_identity($identity, mysqli $connection = null)
+    {
+        $connection = $connection ?: therain_db();
+
+        $statement = $connection->prepare('SELECT * FROM users WHERE email = ? OR username = ? LIMIT 1');
+        $statement->bind_param('ss', $identity, $identity);
+        $statement->execute();
+        $user = $statement->get_result()->fetch_assoc();
+        $statement->close();
+
+        return $user ?: null;
+    }
+}
+
 if (!function_exists('therain_generate_unique_username')) {
     /**
      * Generates a unique username from a base value (e.g. an email's local

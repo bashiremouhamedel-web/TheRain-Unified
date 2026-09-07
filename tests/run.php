@@ -29,6 +29,17 @@ if (function_exists('ob_end_flush')) {
 
 require_once __DIR__ . '/bootstrap.php';
 
+$requestedGroup = null;
+$tracePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'therain-test-trace.log';
+if (in_array('--clear-trace', $argv, true) && is_file($tracePath)) {
+    unlink($tracePath);
+}
+foreach ($argv as $argument) {
+    if (strpos($argument, '--group=') === 0) {
+        $requestedGroup = substr($argument, 8);
+    }
+}
+
 // Started before any output/echo, so the session tests below don't trip
 // a CLI-only "headers already sent" warning (a real HTTP request has no
 // such ordering constraint; this is purely a test-runner artifact).
@@ -61,34 +72,34 @@ foreach ($testFiles as $testFile) {
 // Order matters: registration must run before anything that needs a
 // tenant/user, payment-method enablement before payments, etc.
 $testRuns = array(
-    'therain_test_run_config',
-    'therain_test_run_migrations',
-    'therain_test_run_module_registry',
-    'therain_test_run_registration',
-    'therain_test_run_login',
-    'therain_test_run_csrf',
-    'therain_test_run_sessions',
-    'therain_test_run_tenant_isolation',
-    'therain_test_run_permissions',
-    'therain_test_run_currency',
-    'therain_test_run_payment_methods',
-    'therain_test_run_payments_and_refunds',
-    'therain_test_run_cashier_shift',
-    'therain_test_run_reporting',
-    'therain_test_run_audit_trail',
-    'therain_test_run_audit',
-    'therain_test_run_transactions',
-    'therain_test_run_pharmacy_schema',
-    'therain_test_run_pharmacy_employee_identity',
-    'therain_test_run_dbumi_consistency',
+    'database' => array('therain_test_run_config', 'therain_test_run_migrations', 'therain_test_run_dbumi_consistency'),
+    'modules' => array('therain_test_run_module_registry'),
+    'auth' => array('therain_test_run_registration', 'therain_test_run_login', 'therain_test_run_csrf'),
+    'sessions' => array('therain_test_run_sessions'),
+    'tenants' => array('therain_test_run_tenant_isolation'),
+    'permissions' => array('therain_test_run_permissions'),
+    'currency' => array('therain_test_run_currency'),
+    'payments' => array('therain_test_run_registration', 'therain_test_run_payment_methods', 'therain_test_run_payments_and_refunds', 'therain_test_run_cashier_shift', 'therain_test_run_reporting', 'therain_test_run_audit_trail', 'therain_test_run_audit'),
+    'transactions' => array('therain_test_run_transactions'),
+    'pharmacy' => array('therain_test_run_registration', 'therain_test_run_pharmacy_schema', 'therain_test_run_pharmacy_employee_identity'),
 );
 
-foreach ($testRuns as $function) {
+if ($requestedGroup !== null && !array_key_exists($requestedGroup, $testRuns)) {
+    fwrite(STDERR, "Unknown test group: $requestedGroup\n");
+    exit(1);
+}
+
+$selectedRuns = $requestedGroup === null ? array_merge(...array_values($testRuns)) : $testRuns[$requestedGroup];
+
+foreach ($selectedRuns as $function) {
     if (!function_exists($function)) {
         fwrite(STDERR, "Test function not found: $function\n");
         exit(1);
     }
+    $GLOBALS['therain_test_last_group'] = $function;
+    therain_test_trace('START', $function);
     $function();
+    therain_test_trace('COMPLETE', $function);
 }
 
 echo "\n========================================\n";

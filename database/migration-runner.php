@@ -33,6 +33,26 @@ if (!function_exists('therain_migration_files')) {
     }
 }
 
+if (!function_exists('therain_migration_split_sql_statements')) {
+    /**
+     * Splits the project's migration SQL into individual statements.
+     * Migration files use one statement per semicolon-terminated line.
+     *
+     * @param string $sql
+     * @return string[]
+     */
+    function therain_migration_split_sql_statements($sql)
+    {
+        $withoutComments = preg_replace('/^\s*--.*$/m', '', $sql);
+        $statements = preg_split('/;\s*\r?\n/', $withoutComments);
+        $statements = array_map('trim', $statements);
+
+        return array_values(array_filter($statements, function ($statement) {
+            return $statement !== '';
+        }));
+    }
+}
+
 if (!function_exists('therain_migrations_tracking_table_exists')) {
     /**
      * @param mysqli $connection
@@ -164,21 +184,11 @@ if (!function_exists('therain_migrations_apply')) {
             // reliable. See docs/TEST-SUITE-REPORT.md.
             mysqli_report(MYSQLI_REPORT_OFF);
 
-            $queryOk = $connection->multi_query($sql);
-
-            if ($queryOk) {
-                do {
-                    if ($result = $connection->store_result()) {
-                        $result->free();
-                    }
-                } while ($connection->more_results() && $connection->next_result());
-            }
-
-            $multiQueryError = $connection->error;
-
-            if (!$queryOk || $multiQueryError) {
-                $results[] = array('migration' => $migration, 'status' => 'failed', 'error' => 'Migration failed: ' . $multiQueryError);
-                return $results;
+            foreach (therain_migration_split_sql_statements($sql) as $statementSql) {
+                if (!$connection->query($statementSql)) {
+                    $results[] = array('migration' => $migration, 'status' => 'failed', 'error' => 'Migration failed: ' . $connection->error);
+                    return $results;
+                }
             }
 
             $statement = $connection->prepare('INSERT INTO schema_migrations (migration, batch) VALUES (?, ?)');

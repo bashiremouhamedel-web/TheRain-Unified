@@ -9,18 +9,18 @@ function therain_test_run_migrations()
     $tableCount = $db->query(
         "SELECT COUNT(*) AS c FROM information_schema.tables WHERE table_schema = '" . $db->real_escape_string($GLOBALS['therain_test_database_name']) . "'"
     )->fetch_assoc()['c'];
-    therain_test_assert('exactly 32 tables exist after migration', (int) $tableCount === 32, "actual=$tableCount");
+    therain_test_assert('exactly 34 tables exist after migration', (int) $tableCount === 34, "actual=$tableCount");
 
     $fkCount = $db->query(
         "SELECT COUNT(*) AS c FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '" . $db->real_escape_string($GLOBALS['therain_test_database_name']) . "' AND REFERENCED_TABLE_NAME IS NOT NULL"
     )->fetch_assoc()['c'];
-    therain_test_assert('exactly 58 foreign keys exist after migration', (int) $fkCount === 58, "actual=$fkCount");
+    therain_test_assert('exactly 65 foreign keys exist after migration', (int) $fkCount === 65, "actual=$fkCount");
 
     $applied = $db->query('SELECT migration FROM schema_migrations ORDER BY migration ASC')->fetch_all(MYSQLI_ASSOC);
     $appliedNames = array_column($applied, 'migration');
     therain_test_assert(
-        'all four migrations recorded as applied',
-        $appliedNames === array('0001_initial_unified_schema.sql', '0002_identity_foundation.sql', '0003_financial_foundation.sql', '0004_pharmacy_permissions.sql'),
+        'all five migrations recorded as applied',
+        $appliedNames === array('0001_initial_unified_schema.sql', '0002_identity_foundation.sql', '0003_financial_foundation.sql', '0004_pharmacy_permissions.sql', '0005_transaction_and_audit_foundation.sql'),
         json_encode($appliedNames)
     );
 

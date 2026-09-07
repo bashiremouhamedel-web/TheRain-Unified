@@ -31,6 +31,10 @@ if (!function_exists('therain_validate_registration_input')) {
         $businessPhone = isset($input['business_phone']) ? trim($input['business_phone']) : '';
         $managementSystem = isset($input['management_system']) ? trim($input['management_system']) : '';
 
+        if (empty($input['terms_consent'])) {
+            $errors[] = 'You must accept the platform terms and conditions.';
+        }
+
         if ($fullName === '') {
             $errors[] = 'Full name is required.';
         }
@@ -69,6 +73,8 @@ if (!function_exists('therain_validate_registration_input')) {
             $errors[] = 'Please select a management system.';
         } elseif (!isset(therain_module_registry()[$managementSystem])) {
             $errors[] = 'The selected management system is not recognized.';
+        } elseif (empty(therain_module_registry()[$managementSystem]['enabled'])) {
+            $errors[] = 'The selected management system is not available yet.';
         }
 
         if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) && therain_find_user_by_email($email, $connection)) {
