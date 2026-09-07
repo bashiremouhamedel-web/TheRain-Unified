@@ -41,14 +41,14 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 .shell-profile-menu a { display: block; padding: 8px 14px; color: #46525d; font-size: .82rem; text-decoration: none; }
 .shell-profile-menu a:hover { background: #f0fafb; color: var(--shell-primary); }
 .shell-body { min-height: calc(100vh - var(--shell-footer-height)); padding-top: var(--shell-topbar-height); padding-bottom: var(--shell-footer-height); }
-.shell-sidebar { position: fixed; z-index: 15; top: var(--shell-topbar-height); bottom: var(--shell-footer-height); left: 0; width: var(--shell-sidebar-width); display: flex; flex-direction: column; overflow-y: auto; background: linear-gradient(180deg, var(--shell-sidebar), var(--shell-sidebar-deep)); color: #31566d; transition: width .2s ease, transform .2s ease; box-shadow: 3px 0 18px rgba(24,83,112,.08); }
+.shell-sidebar { position: fixed; z-index: 15; top: var(--shell-topbar-height); bottom: var(--shell-footer-height); left: 0; width: var(--shell-sidebar-width); display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, var(--shell-sidebar), var(--shell-sidebar-deep)); color: #31566d; transition: width .2s ease, transform .2s ease; box-shadow: 3px 0 18px rgba(24,83,112,.08); }
 .shell-brand { display: flex; align-items: center; gap: 12px; min-height: 82px; padding: 16px 20px; color: #234f68; text-decoration: none; border-bottom: 1px solid var(--shell-border); }
 .shell-brand img, .shell-brand-mark { width: 42px; height: 42px; flex: 0 0 42px; object-fit: cover; border-radius: 50%; }
 .shell-brand-mark { display: grid; place-items: center; background: linear-gradient(145deg, var(--shell-primary), #0d7590); color: #fff; font-weight: 700; box-shadow: 0 6px 14px rgba(23,162,184,.3); }
 .shell-brand strong, .shell-brand small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .shell-brand strong { font-size: .82rem; }
 .shell-brand small { margin-top: 3px; color: #7090a0; font-size: .66rem; }
-.shell-sidebar nav { flex: 1; padding: 16px 10px; }
+.shell-sidebar nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 10px; }
 .shell-sidebar ul { margin: 0; padding: 0; list-style: none; }
 .shell-nav-heading { margin: 15px 12px 6px; color: #5da8b8; font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .shell-sidebar li a, .shell-logout { display: flex; align-items: center; gap: 13px; min-height: 42px; padding: 9px 12px; border-left: 3px solid transparent; border-radius: 7px; color: #527286; font-size: .78rem; text-decoration: none; transition: background .18s ease, border-color .18s ease, color .18s ease; }

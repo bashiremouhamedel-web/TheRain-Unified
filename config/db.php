@@ -1,4 +1,8 @@
 <?php
+	$therainCoreBootstrap = dirname(__DIR__) . '/core/config/bootstrap.php';
+	if (is_file($therainCoreBootstrap)) {
+		require_once $therainCoreBootstrap;
+	}
 	// ============================================================================
 	// PHARMACY POS - DATABASE & SYSTEM CONFIGURATION
 	// Cameroon Edition

@@ -86,6 +86,9 @@ session_write_close();
 session_id('');
 session_name('PHPSESSID');
 session_start();
+// Always issue a fresh legacy session after leaving the Unified session.
+// This prevents a stale PHPSESSID from losing the acting-user bridge key.
+session_regenerate_id(true);
 $_SESSION['store_id'] = $storeId;
 
 // Phase 9 employee identity bridge (docs/PHARMACY-EMPLOYEE-IDENTITY.md):
