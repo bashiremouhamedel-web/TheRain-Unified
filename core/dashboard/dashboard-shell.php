@@ -101,6 +101,7 @@ if (!function_exists('therain_dashboard_render')) {
     <label class="shell-language"><i class="fas fa-globe" aria-hidden="true"></i><span class="sr-only">Language</span><select onchange="window.location.href='<?php echo therain_dashboard_escape($languagePath); ?>?lang=' + encodeURIComponent(this.value)">
       <?php foreach ($languageOptions as $code => $language) : ?><option value="<?php echo therain_dashboard_escape($code); ?>" <?php echo $locale === $code ? 'selected' : ''; ?>><?php echo therain_dashboard_escape($language['name']); ?></option><?php endforeach; ?>
     </select></label>
+    <button class="shell-mode-toggle" type="button" data-shell-theme-toggle aria-label="Toggle theme" title="Toggle theme"><i class="fas fa-moon" aria-hidden="true"></i></button>
     <a class="shell-notification" href="<?php echo $base; ?>core/notifications/index.php" aria-label="Notifications">
       <i class="far fa-bell"></i><?php if ($notificationCount > 0) : ?><span><?php echo (int) $notificationCount; ?></span><?php endif; ?>
     </a>
@@ -135,8 +136,11 @@ if (!function_exists('therain_dashboard_render')) {
   var shell = document.body;
   var sidebar = document.querySelector('[data-shell-sidebar]');
   var toggle = document.querySelector('[data-shell-toggle]');
+  var themeToggle = document.querySelector('[data-shell-theme-toggle]');
   var key = 'therain.dashboard.sidebar.collapsed';
+  var themeKey = 'therain.dashboard.theme';
   if (localStorage.getItem(key) === '1') shell.classList.add('shell-collapsed');
+  if (localStorage.getItem(themeKey) === 'dark') { shell.classList.add('shell-theme-dark'); themeToggle.querySelector('i').className = 'fas fa-sun'; }
   toggle.addEventListener('click', function () {
     if (window.innerWidth <= 900) {
       shell.classList.toggle('shell-mobile-open');
@@ -144,6 +148,11 @@ if (!function_exists('therain_dashboard_render')) {
     }
     shell.classList.toggle('shell-collapsed');
     localStorage.setItem(key, shell.classList.contains('shell-collapsed') ? '1' : '0');
+  });
+  themeToggle.addEventListener('click', function () {
+    shell.classList.toggle('shell-theme-dark');
+    localStorage.setItem(themeKey, shell.classList.contains('shell-theme-dark') ? 'dark' : 'light');
+    themeToggle.querySelector('i').className = shell.classList.contains('shell-theme-dark') ? 'fas fa-sun' : 'fas fa-moon';
   });
   sidebar.addEventListener('click', function (event) {
     if (window.innerWidth <= 900 && event.target.closest('a')) shell.classList.remove('shell-mobile-open');
