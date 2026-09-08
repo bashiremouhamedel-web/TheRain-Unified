@@ -20,7 +20,7 @@ if (!therain_user_has_permission($user['id'], $user['tenant_id'], 'pharmacy.sett
 $section = isset($_GET['section']) ? trim($_GET['section']) : 'general';
 $message = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && therain_csrf_verify($_POST['csrf_token'] ?? null)) {
-    $allowed = array('general', 'appearance', 'language', 'currency', 'notifications', 'payment', 'printing', 'barcode', 'branches', 'backup', 'system');
+    $allowed = array('general', 'profile', 'pharmacy', 'appearance', 'theme', 'language', 'currency', 'notifications', 'payment', 'tax', 'printing', 'barcode', 'branches', 'backup', 'system');
     if (in_array($section, $allowed, true)) {
         $value = trim($_POST['setting_value'] ?? '');
         $key = 'settings.' . $section;
