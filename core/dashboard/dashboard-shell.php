@@ -126,6 +126,13 @@ if (!function_exists('therain_dashboard_render')) {
         $navMatches = function ($route) use ($currentPath, $currentQuery) {
           $routeParts = parse_url($route);
           $routePath = '/' . ltrim(rawurldecode($routeParts['path'] ?? ''), '/');
+          if (substr($currentPath, -strlen('/core/pharmacy/index.php')) === '/core/pharmacy/index.php'
+              && substr($routePath, 0, 1) === '/'
+              && substr($routePath, -4) === '.php'
+              && isset($currentQuery['view'])
+              && ltrim((string) $currentQuery['view'], '/') === ltrim($routePath, '/')) {
+            return true;
+          }
           if ($routePath === '/' || substr($currentPath, -strlen($routePath)) !== $routePath) {
             return false;
           }
@@ -145,7 +152,7 @@ if (!function_exists('therain_dashboard_render')) {
           $route = (string) $route;
           $routePath = parse_url($route, PHP_URL_PATH) ?: '';
           if (strpos($routePath, '/') === false && substr($routePath, -4) === '.php' && $routePath !== 'auth.php') {
-            return $base . 'auth/actions/enter-pharmacy.php?target=' . rawurlencode($route);
+            return $base . 'core/pharmacy/index.php?view=' . rawurlencode($route);
           }
           return $base . ltrim($route, '/');
         };
