@@ -176,6 +176,8 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 @media (max-width: 900px) { .settings-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .identity-form-grid, .identity-card-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .settings-center { padding: 14px; }.settings-center-intro { align-items: flex-start; flex-direction: column; }.settings-card-grid { grid-template-columns: 1fr; }.settings-card small { white-space: normal; } }
+.settings-card-action { display: inline-flex; align-items: center; gap: 4px; color: var(--shell-primary); font-size: .58rem; white-space: nowrap; }.settings-card-action i { font-size: .5rem; }.settings-compact-editor { margin: 18px 0; }.settings-inline-form { display: flex; align-items: flex-end; gap: 10px; }.settings-inline-form textarea { flex: 1; min-height: 74px; resize: vertical; padding: 9px 11px; border: 1px solid var(--shell-border); border-radius: 8px; background: #fafdfe; color: #193d59; font: inherit; font-size: .72rem; }.settings-inline-form .auth-button { white-space: nowrap; }
+@media (max-width: 560px) { .settings-inline-form { align-items: stretch; flex-direction: column; }.settings-inline-form .auth-button { width: 100%; } }
 
 /* Smart identity card front/back presentation. */
 .identity-card-grid { grid-template-columns: 1fr; }
