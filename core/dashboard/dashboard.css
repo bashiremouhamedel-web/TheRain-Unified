@@ -201,3 +201,35 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 .settings-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: #7b93a0; font-size: .68rem; }.settings-breadcrumb a { color: var(--shell-primary); text-decoration: none; }.settings-breadcrumb i { font-size: .55rem; }.settings-header-actions { display: flex; align-items: center; gap: 10px; }.settings-search { display: flex; align-items: center; gap: 8px; width: 190px; padding: 8px 10px; border: 1px solid var(--shell-border); border-radius: 8px; background: #fff; color: var(--shell-primary); }.settings-search input { width: 100%; min-width: 0; border: 0; outline: 0; color: #31566d; font: inherit; font-size: .65rem; }.settings-center { grid-template-columns: 190px minmax(0, 1fr); gap: 22px; padding: 18px; }.settings-rail-wrap { min-width: 0; border-right: 1px solid var(--shell-border); padding-right: 12px; }.settings-rail { display: grid; gap: 3px; }.settings-rail h3 { margin: 14px 8px 4px; color: #7da3b2; font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; }.settings-rail-overview, .settings-rail-link { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px; border-radius: 7px; color: #527286; font-size: .65rem; text-decoration: none; }.settings-rail-overview i:first-child, .settings-rail-link i:first-child { width: 16px; text-align: center; }.settings-rail-link i:last-child { margin-left: auto; color: #9ab1bc; font-size: .5rem; }.settings-rail-overview span, .settings-rail-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.settings-rail-overview:hover, .settings-rail-link:hover, .settings-rail-link.is-active { background: #effbfd; color: #087c93; }.settings-center-main { min-width: 0; }.settings-center-intro { margin-bottom: 20px; padding: 14px; border-bottom: 0; border-radius: 9px; background: linear-gradient(110deg, #effbfd, #f8fbff); }.settings-card-area { display: grid; gap: 18px; }.settings-card[hidden], .settings-group[hidden] { display: none; }.shell-theme-dark .settings-center, .shell-theme-dark .settings-card { background: #173449; }
 @media (max-width: 900px) { .settings-center { grid-template-columns: 1fr; }.settings-rail-wrap { border-right: 0; border-bottom: 1px solid var(--shell-border); padding: 0 0 12px; max-height: 220px; overflow-y: auto; }.settings-header-actions { align-items: stretch; flex-direction: column; }.settings-search { width: 100%; } }
 @media (max-width: 560px) { .settings-center { padding: 14px; }.settings-center-intro { align-items: flex-start; flex-direction: column; }.settings-card-grid { grid-template-columns: 1fr; }.settings-card small { white-space: normal; } }
+
+/* Keep settings controls readable when the shared shell is in dark mode. */
+.shell-theme-dark .settings-breadcrumb,
+.shell-theme-dark .settings-header-actions,
+.shell-theme-dark .settings-rail h3,
+.shell-theme-dark .settings-center-intro p,
+.shell-theme-dark .settings-card small,
+.shell-theme-dark .settings-control-grid small,
+.shell-theme-dark .settings-check small { color: #b9d2dc; }
+.shell-theme-dark .settings-search,
+.shell-theme-dark .settings-control-grid select,
+.shell-theme-dark .settings-control-grid input[type="color"],
+.shell-theme-dark .settings-inline-form textarea { background: #102b3c; border-color: #3c6374; color: #eef9fc; }
+.shell-theme-dark .settings-search input,
+.shell-theme-dark .settings-rail-overview,
+.shell-theme-dark .settings-rail-link,
+.shell-theme-dark .settings-card,
+.shell-theme-dark .settings-control-grid label,
+.shell-theme-dark .settings-check,
+.shell-theme-dark .settings-notification-grid legend { color: #e6f2f5; }
+.shell-theme-dark .settings-rail-overview:hover,
+.shell-theme-dark .settings-rail-link:hover,
+.shell-theme-dark .settings-rail-link.is-active,
+.shell-theme-dark .settings-card:hover,
+.shell-theme-dark .settings-card.is-active { background: #214b60; color: #ffffff; }
+.shell-theme-dark .settings-card strong,
+.shell-theme-dark .settings-center-intro h2,
+.shell-theme-dark .settings-group h2,
+.shell-theme-dark .settings-control-grid label,
+.shell-theme-dark .settings-notification-grid legend { color: #f4fbfd; }
+.shell-theme-dark .settings-card-icon { background: #214b60; color: #8be7f3; }
+.shell-theme-dark .settings-notification-grid fieldset { border-color: #3c6374; }
