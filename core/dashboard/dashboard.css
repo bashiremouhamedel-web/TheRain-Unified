@@ -243,3 +243,14 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 .shell-theme-dark .shell-nav-summary.is-open { background: transparent; color: #8be7f3; }
 .shell-theme-dark .shell-nav-summary.is-open:hover { background: #214b60; color: #f4fbfd; }
 .shell-theme-dark .shell-dropdown-caret { color: #9cc4d1; }
+.shell-theme-dark .shell-search { background: #102b3c; border-color: #3c6374; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .18); }
+.shell-theme-dark .shell-search input { color: #eef9fc; caret-color: #8be7f3; }
+.shell-theme-dark .shell-search input::placeholder { color: #b9d2dc; opacity: 1; }
+.shell-theme-dark .shell-search:focus-within { border-color: var(--shell-primary); box-shadow: 0 0 0 3px rgba(15, 107, 255, .2); }
+.shell-theme-dark .settings-search { background: #102b3c; border-color: #3c6374; }
+.shell-theme-dark .settings-search input { background: transparent; color: #eef9fc; caret-color: #8be7f3; }
+.shell-theme-dark .settings-search input::placeholder { color: #b9d2dc; opacity: 1; }
+.shell-theme-dark .settings-search:focus-within { border-color: var(--shell-primary); box-shadow: 0 0 0 3px rgba(15, 107, 255, .2); }
+.shell-theme-dark .settings-center-intro { background: #214b60; border: 1px solid #3c6374; }
+.shell-theme-dark .settings-center-intro h2 { color: #ffffff; }
+.shell-theme-dark .settings-center-intro p { color: #d2e7ed; }

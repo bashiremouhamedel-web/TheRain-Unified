@@ -15,6 +15,7 @@ This phase fixed shared Unified navigation state and verified the Settings Cente
 - Appearance now saves structured tenant-scoped display, density, sidebar, and font-size preferences; the shared shell applies the saved font size after refresh.
 - Theme now saves structured primary, secondary, and accent colors; the shared shell applies them through centralized CSS variables.
 - Dark-mode sidebar hover now uses a muted blue state distinct from the stronger active state; long submenu labels no longer create horizontal sidebar overflow.
+- Dark-mode topbar search, Settings search, and Settings intro panel now use readable dark surfaces with light text and visible focus/border states.
 - Notifications now exposes 15 real tenant-scoped preference checkboxes and restores selected values after refresh.
 - Language now exposes all 8 configured languages and persists the selected locale in the session, cookie, tenant row, and settings row.
 - Currency now uses the existing currency catalog/service, updates the tenant base currency, and explicitly keeps stored transaction amounts unchanged.
@@ -35,6 +36,7 @@ Fresh real-browser verification as Young Tech owner:
 - Mobile 390x844: no horizontal overflow.
 - Dark-mode sidebar hover: readable muted-blue hover state; active leaf remains visually stronger.
 - Dark-mode sidebar at 1000x560: sidebar navigation has no horizontal overflow.
+- Dark-mode highlighted surfaces at 975x540 and 390x844: both search controls and the intro panel have dark backgrounds; mobile has no horizontal overflow.
 
 ## Settings Sections Tested
 
