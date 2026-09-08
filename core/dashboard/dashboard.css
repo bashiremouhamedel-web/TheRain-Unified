@@ -253,4 +253,13 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 .shell-theme-dark .settings-search:focus-within { border-color: var(--shell-primary); box-shadow: 0 0 0 3px rgba(15, 107, 255, .2); }
 .shell-theme-dark .settings-center-intro { background: #214b60; border: 1px solid #3c6374; }
 .shell-theme-dark .settings-center-intro h2 { color: #ffffff; }
+.shell-theme-dark .identity-card-form label,
+.shell-theme-dark .identity-card-form legend { color: #f4fbfd; }
+.shell-theme-dark .identity-card-form input,
+.shell-theme-dark .identity-card-form select { background: #102b3c; border-color: #3c6374; color: #eef9fc; }
+.shell-theme-dark .identity-card-form input::placeholder { color: #b9d2dc; opacity: 1; }
+.shell-theme-dark .identity-card-form input:focus,
+.shell-theme-dark .identity-card-form select:focus { border-color: var(--shell-primary); box-shadow: 0 0 0 3px rgba(15, 107, 255, .2); }
+.shell-theme-dark .identity-card-form fieldset { border-color: #3c6374; }
+.shell-theme-dark .identity-card-form option { background: #102b3c; color: #eef9fc; }
 .shell-theme-dark .settings-center-intro p { color: #d2e7ed; }
