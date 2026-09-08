@@ -73,6 +73,16 @@ if (!function_exists('therain_dashboard_render')) {
         $currency = therain_user_currency_preference($GLOBALS['therain_dashboard_user']['id'], $GLOBALS['therain_dashboard_user']['tenant_id']);
         $locale = therain_auth_locale();
         $languageOptions = therain_language_options();
+        $appearance = array('font_size' => 'medium', 'density' => 'comfortable', 'display_mode' => 'light', 'sidebar' => 'expanded');
+        $theme = array('primary' => '#17A2B8', 'secondary' => '#6F42C1', 'accent' => '#FF7844');
+        $storedAppearance = json_decode($identity['settings']['settings.appearance'] ?? '', true);
+        $storedTheme = json_decode($identity['settings']['settings.theme'] ?? '', true);
+        if (is_array($storedAppearance)) $appearance = array_merge($appearance, $storedAppearance);
+        if (is_array($storedTheme)) $theme = array_merge($theme, $storedTheme);
+        $fontSizes = array('small' => '15px', 'normal' => '16px', 'medium' => '17px', 'large' => '18px', 'extra-large' => '19px');
+        $fontSize = $fontSizes[$appearance['font_size']] ?? $fontSizes['medium'];
+        $displayMode = in_array($appearance['display_mode'], array('light', 'dark', 'system'), true) ? $appearance['display_mode'] : 'light';
+        $themeStyle = '--shell-primary:' . therain_dashboard_escape($theme['primary']) . ';--shell-secondary:' . therain_dashboard_escape($theme['secondary']) . ';--shell-accent:' . therain_dashboard_escape($theme['accent']) . ';--shell-font-size:' . $fontSize . ';';
         $languagePath = strtok($_SERVER['REQUEST_URI'] ?? '', '?');
         ?>
 <!DOCTYPE html>
@@ -87,7 +97,7 @@ if (!function_exists('therain_dashboard_render')) {
   <link rel="stylesheet" href="<?php echo $base; ?>dist/css/adminlte.min.css">
   <link rel="stylesheet" href="<?php echo $base; ?>core/dashboard/dashboard.css">
 </head>
-<body class="dashboard-shell">
+<body class="dashboard-shell<?php echo $displayMode === 'dark' ? ' shell-theme-dark' : ''; ?>" style="<?php echo $themeStyle; ?>" data-font-size="<?php echo therain_dashboard_escape($appearance['font_size']); ?>" data-display-mode="<?php echo therain_dashboard_escape($displayMode); ?>">
 <header class="shell-topbar">
   <button class="shell-icon-button" type="button" data-shell-toggle aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
   <div class="shell-context"><strong>TheRain Unified</strong><small><?php echo therain_dashboard_escape($moduleName); ?></small></div>

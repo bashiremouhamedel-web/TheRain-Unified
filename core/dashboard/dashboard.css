@@ -12,7 +12,7 @@
 }
 
 * { box-sizing: border-box; }
-body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: var(--shell-font-size, 17px); }
 .shell-topbar { position: fixed; z-index: 20; inset: 0 0 auto 0; height: var(--shell-topbar-height); display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(255,255,255,.98); border-bottom: 1px solid var(--shell-border); box-shadow: 0 3px 18px rgba(24,58,84,.08); }
 .shell-icon-button, .shell-notification, .shell-profile summary { border: 0; background: transparent; color: #557286; cursor: pointer; }
 .shell-icon-button { width: 40px; height: 40px; border-radius: 8px; font-size: 1.05rem; }
@@ -176,7 +176,7 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 @media (max-width: 900px) { .settings-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .identity-form-grid, .identity-card-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .settings-center { padding: 14px; }.settings-center-intro { align-items: flex-start; flex-direction: column; }.settings-card-grid { grid-template-columns: 1fr; }.settings-card small { white-space: normal; } }
-.settings-card-action { display: inline-flex; align-items: center; gap: 4px; color: var(--shell-primary); font-size: .58rem; white-space: nowrap; }.settings-card-action i { font-size: .5rem; }.settings-compact-editor { margin: 18px 0; }.settings-inline-form { display: flex; align-items: flex-end; gap: 10px; }.settings-inline-form textarea { flex: 1; min-height: 74px; resize: vertical; padding: 9px 11px; border: 1px solid var(--shell-border); border-radius: 8px; background: #fafdfe; color: #193d59; font: inherit; font-size: .72rem; }.settings-inline-form .auth-button { white-space: nowrap; }
+.settings-card-action { display: inline-flex; align-items: center; gap: 4px; color: var(--shell-primary); font-size: .58rem; white-space: nowrap; }.settings-card-action i { font-size: .5rem; }.settings-compact-editor { margin: 18px 0; }.settings-inline-form { display: flex; align-items: flex-end; gap: 10px; }.settings-inline-form textarea { flex: 1; min-height: 74px; resize: vertical; padding: 9px 11px; border: 1px solid var(--shell-border); border-radius: 8px; background: #fafdfe; color: #193d59; font: inherit; font-size: .72rem; }.settings-inline-form .auth-button { white-space: nowrap; }.settings-control-grid { display: grid; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }.settings-control-grid label { display: grid; gap: 5px; color: #31566d; font-size: .72rem; font-weight: 600; }.settings-control-grid select, .settings-control-grid input[type="color"] { width: 100%; min-height: 40px; padding: 6px 8px; border: 1px solid var(--shell-border); border-radius: 7px; background: #fafdfe; color: #193d59; font: inherit; }.settings-control-grid input[type="color"] { padding: 3px; cursor: pointer; }.settings-color-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 560px) { .settings-inline-form { align-items: stretch; flex-direction: column; }.settings-inline-form .auth-button { width: 100%; } }
 
 /* Smart identity card front/back presentation. */
