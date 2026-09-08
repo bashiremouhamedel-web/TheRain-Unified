@@ -14,6 +14,9 @@ This phase fixed shared Unified navigation state and verified the Settings Cente
 - Settings cards support on-demand compact Configure/save behavior while the landing page stays clean.
 - Appearance now saves structured tenant-scoped display, density, sidebar, and font-size preferences; the shared shell applies the saved font size after refresh.
 - Theme now saves structured primary, secondary, and accent colors; the shared shell applies them through centralized CSS variables.
+- Notifications now exposes 15 real tenant-scoped preference checkboxes and restores selected values after refresh.
+- Language now exposes all 8 configured languages and persists the selected locale in the session, cookie, tenant row, and settings row.
+- Currency now uses the existing currency catalog/service, updates the tenant base currency, and explicitly keeps stored transaction amounts unchanged.
 
 ## Browser Evidence
 
@@ -21,6 +24,9 @@ Fresh real-browser verification as Young Tech owner:
 
 - System Support: loads as `System Support`, no fatal error, no legacy sidebar, one Logout.
 - Settings Theme Configure: compact editor opens and saves successfully.
+- Settings Notifications: 15 checkboxes across 5 groups; selected Low Stock and New Login values persisted after refresh.
+- Settings Language: 8 language options; French persisted with `<html lang="fr">` after refresh.
+- Settings Currency: 70 catalog options; USD persisted and displayed in the shared topbar without converting stored amounts.
 - Settings matrix: all 15 sections load with one active rail item, 15 cards, no fatal error, and no horizontal overflow.
 - Low Stock: one active leaf, Products & Inventory OPEN only.
 - Out of Stock: one active leaf, Products & Inventory OPEN only.
@@ -47,7 +53,7 @@ Fresh real-browser verification as Young Tech owner:
 
 ## Database Evidence
 
-The disposable `therain_unified_test` database contains 8 Young Tech users and 15 tenant-scoped settings rows. Browser saves were confirmed for structured `settings.appearance` and `settings.theme` values, including a refreshed `18px` large font setting and a saved `#0F6BFF` primary color.
+The disposable `therain_unified_test` database contains 8 Young Tech users and tenant-scoped settings rows. Browser saves were confirmed for structured `settings.appearance` and `settings.theme` values, including a refreshed `18px` large font setting and a saved `#0F6BFF` primary color, plus `settings.notifications`, `settings.language`, and `settings.currency`. The tenant row reflected the tested `fr` locale and `USD` base currency.
 
 ## Status Classification
 
@@ -64,6 +70,9 @@ The disposable `therain_unified_test` database contains 8 Young Tech users and 1
 | Automatic printer discovery | NOT IMPLEMENTED; browser print remains supported |
 | Dashboard theme variables | WORKING for shared primary, secondary, and accent shell variables; remaining per-component hardcoded colors are a known styling gap |
 | Dashboard font-size preference | WORKING for shared shell inheritance and persisted Appearance selection; some legacy fixed `rem` rules remain component-specific |
+| Notification preference persistence | WORKING for saved tenant preferences; delivery automation remains service-dependent |
+| Language preference persistence | WORKING for session, cookie, tenant, and settings persistence; full translation coverage remains open |
+| Currency preference persistence | WORKING through the currency catalog/service; no exchange-rate conversion is invented |
 | Full eight-language translation of all new labels | PARTIALLY WORKING; language architecture exists, complete new-shell translation coverage remains open |
 | Backup/restore and integrations | NOT IMPLEMENTED; no fake success is reported |
 

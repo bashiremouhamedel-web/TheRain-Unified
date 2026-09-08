@@ -5,6 +5,8 @@ require_once dirname(__DIR__) . '/config/connection.php';
 require_once dirname(__DIR__) . '/auth/csrf.php';
 require_once dirname(__DIR__) . '/auth/session-service.php';
 require_once dirname(__DIR__) . '/auth/auth-service.php';
+require_once dirname(__DIR__) . '/currency/currency-service.php';
+require_once dirname(__DIR__) . '/i18n/auth.php';
 require_once dirname(__DIR__) . '/permissions/permission-service.php';
 require_once dirname(__DIR__) . '/dashboard/dashboard-shell.php';
 require_once dirname(__DIR__) . '/navigation/navigation-service.php';
@@ -37,6 +39,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && therain_csrf_verify($_POST['csrf_to
                 'secondary' => preg_match('/^#[0-9A-Fa-f]{6}$/', $_POST['secondary'] ?? '') ? strtoupper($_POST['secondary']) : '#6F42C1',
                 'accent' => preg_match('/^#[0-9A-Fa-f]{6}$/', $_POST['accent'] ?? '') ? strtoupper($_POST['accent']) : '#FF7844',
             ));
+        } elseif ($section === 'notifications') {
+            $notificationKeys = array('low_stock', 'out_of_stock', 'near_expiry', 'expired_products', 'damaged_stock', 'new_sale', 'returned_sale', 'payment_received', 'new_purchase', 'purchase_completed', 'new_login', 'failed_login', 'new_user', 'permission_change', 'system_notifications');
+            $preferences = array();
+            foreach ($notificationKeys as $notificationKey) $preferences[$notificationKey] = !empty($_POST['notification_' . $notificationKey]);
+            $value = json_encode($preferences);
+        } elseif ($section === 'language') {
+            $language = $_POST['language'] ?? 'en';
+            if (!array_key_exists($language, therain_language_options())) $language = 'en';
+            $value = json_encode(array('language' => $language));
+            $_SESSION['therain_locale'] = $language;
+            setcookie('therain_locale', $language, time() + 31536000, '/', '', false, true);
+            $languageStatement = $connection->prepare('UPDATE tenants SET locale = ? WHERE id = ?');
+            $languageStatement->bind_param('si', $language, $user['tenant_id']); $languageStatement->execute(); $languageStatement->close();
+        } elseif ($section === 'currency') {
+            $currencyCode = strtoupper(trim($_POST['currency_code'] ?? ''));
+            $currencyResult = therain_set_tenant_currency($user['tenant_id'], $currencyCode, $connection);
+            if (!$currencyResult['success']) $currencyCode = '';
+            $value = $currencyCode;
         }
         $key = 'settings.' . $section;
         $statement = $connection->prepare('INSERT INTO tenant_settings (tenant_id, setting_key, setting_value, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = NOW()');
@@ -90,11 +110,22 @@ $content = '<div class="settings-breadcrumb"><a href="../../auth/home.php">Dashb
 $decodedSetting = json_decode($setting['setting_value'] ?? '', true);
 $appearanceSetting = is_array($decodedSetting) && $section === 'appearance' ? array_merge(array('display_mode' => 'light', 'density' => 'comfortable', 'sidebar' => 'expanded', 'font_size' => 'medium'), $decodedSetting) : array('display_mode' => 'light', 'density' => 'comfortable', 'sidebar' => 'expanded', 'font_size' => 'medium');
 $themeSetting = is_array($decodedSetting) && $section === 'theme' ? array_merge(array('primary' => '#17A2B8', 'secondary' => '#6F42C1', 'accent' => '#FF7844'), $decodedSetting) : array('primary' => '#17A2B8', 'secondary' => '#6F42C1', 'accent' => '#FF7844');
+$notificationSetting = is_array($decodedSetting) && $section === 'notifications' ? $decodedSetting : array();
+$languageSetting = is_array($decodedSetting) && $section === 'language' ? ($decodedSetting['language'] ?? therain_auth_locale()) : therain_auth_locale();
 $editorFields = '<textarea name="setting_value" rows="3" placeholder="Enter a value for this setting">' . $escape($setting['setting_value'] ?? '') . '</textarea>';
 if ($section === 'appearance') {
     $editorFields = '<div class="settings-control-grid"><label>Display mode<select name="display_mode"><option value="light" ' . ($appearanceSetting['display_mode'] === 'light' ? 'selected' : '') . '>Light</option><option value="dark" ' . ($appearanceSetting['display_mode'] === 'dark' ? 'selected' : '') . '>Dark</option><option value="system" ' . ($appearanceSetting['display_mode'] === 'system' ? 'selected' : '') . '>System</option></select></label><label>Dashboard density<select name="density"><option value="compact" ' . ($appearanceSetting['density'] === 'compact' ? 'selected' : '') . '>Compact</option><option value="comfortable" ' . ($appearanceSetting['density'] === 'comfortable' ? 'selected' : '') . '>Comfortable</option><option value="spacious" ' . ($appearanceSetting['density'] === 'spacious' ? 'selected' : '') . '>Spacious</option></select></label><label>Sidebar<select name="sidebar"><option value="expanded" ' . ($appearanceSetting['sidebar'] === 'expanded' ? 'selected' : '') . '>Expanded</option><option value="collapsed" ' . ($appearanceSetting['sidebar'] === 'collapsed' ? 'selected' : '') . '>Collapsed</option></select></label><label>Font size<select name="font_size"><option value="small" ' . ($appearanceSetting['font_size'] === 'small' ? 'selected' : '') . '>Small</option><option value="normal" ' . ($appearanceSetting['font_size'] === 'normal' ? 'selected' : '') . '>Normal</option><option value="medium" ' . ($appearanceSetting['font_size'] === 'medium' ? 'selected' : '') . '>Medium (+5px)</option><option value="large" ' . ($appearanceSetting['font_size'] === 'large' ? 'selected' : '') . '>Large</option><option value="extra-large" ' . ($appearanceSetting['font_size'] === 'extra-large' ? 'selected' : '') . '>Extra large</option></select></label></div>';
 } elseif ($section === 'theme') {
     $editorFields = '<div class="settings-control-grid settings-color-grid"><label>Primary color<input type="color" name="primary" value="' . $escape($themeSetting['primary']) . '"></label><label>Secondary color<input type="color" name="secondary" value="' . $escape($themeSetting['secondary']) . '"></label><label>Accent color<input type="color" name="accent" value="' . $escape($themeSetting['accent']) . '"></label></div>';
+} elseif ($section === 'notifications') {
+    $notificationGroups = array('Inventory Alerts' => array('low_stock' => 'Low Stock', 'out_of_stock' => 'Out of Stock', 'near_expiry' => 'Near Expiry', 'expired_products' => 'Expired Products', 'damaged_stock' => 'Damaged Stock'), 'Sales' => array('new_sale' => 'New Sale', 'returned_sale' => 'Returned Sale', 'payment_received' => 'Payment Received'), 'Purchases' => array('new_purchase' => 'New Purchase', 'purchase_completed' => 'Purchase Completed'), 'Security' => array('new_login' => 'New Login', 'failed_login' => 'Failed Login', 'new_user' => 'New User', 'permission_change' => 'Permission Change'), 'System' => array('system_notifications' => 'System Notifications'));
+    $editorFields = '<div class="settings-notification-grid">';
+    foreach ($notificationGroups as $groupName => $groupItems) { $editorFields .= '<fieldset><legend>' . $escape($groupName) . '</legend>'; foreach ($groupItems as $notificationKey => $notificationLabel) $editorFields .= '<label class="settings-check"><input type="checkbox" name="notification_' . $escape($notificationKey) . '" value="1" ' . (!empty($notificationSetting[$notificationKey]) ? 'checked' : '') . '> <span>' . $escape($notificationLabel) . '</span><small>Saved preference; delivery depends on the notification service.</small></label>'; $editorFields .= '</fieldset>'; }
+    $editorFields .= '</div>';
+} elseif ($section === 'language') {
+    $editorFields = '<div class="settings-control-grid"><label>Interface language<select name="language">'; foreach (therain_language_options() as $languageCode => $languageDefinition) $editorFields .= '<option value="' . $escape($languageCode) . '" ' . ($languageSetting === $languageCode ? 'selected' : '') . '>' . $escape($languageDefinition['name']) . '</option>'; $editorFields .= '</select></label></div>';
+} elseif ($section === 'currency') {
+    $tenantCurrency = therain_tenant_default_currency($user['tenant_id'], $connection); $editorFields = '<div class="settings-control-grid"><label>Tenant base currency<select name="currency_code">'; foreach (therain_currency_catalog(true, $connection) as $currencyDefinition) $editorFields .= '<option value="' . $escape($currencyDefinition['code']) . '" ' . (($tenantCurrency['code'] ?? '') === $currencyDefinition['code'] ? 'selected' : '') . '>' . $escape($currencyDefinition['code'] . ' - ' . $currencyDefinition['name']) . '</option>'; $editorFields .= '</select><small>Stored transaction amounts are not converted by this setting.</small></label></div>';
 }
 $content .= $edit ? '<section class="dashboard-panel settings-compact-editor"><div class="panel-heading"><div><i class="' . $escape($sections[$section][1]) . '"></i><div><h2>Configure ' . $escape($sections[$section][0]) . '</h2><small>' . $escape($sections[$section][2]) . '</small></div></div><a class="panel-chip" href="?section=' . rawurlencode($section) . '">Close</a></div>' . ($message ? '<div class="card-feedback card-feedback-success">' . $escape($message) . '</div>' : '') . '<form method="post" class="settings-inline-form">' . therain_csrf_field() . $editorFields . '<button class="auth-button" type="submit"><i class="fas fa-save"></i> Save setting</button></form></section>' : '';
 $content .= '<script>(function(){var input=document.querySelector("[data-settings-search]");if(!input)return;input.addEventListener("input",function(){var query=this.value.toLowerCase().trim();document.querySelectorAll("[data-setting-card]").forEach(function(card){card.hidden=query!==""&&card.dataset.settingSearch.indexOf(query)===-1;});document.querySelectorAll("[data-setting-group]").forEach(function(group){group.hidden=query!==""&&!group.querySelector("[data-setting-card]:not([hidden])");});});}());</script>';
