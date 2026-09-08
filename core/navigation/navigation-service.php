@@ -227,13 +227,6 @@ if (!function_exists('therain_navigation_for_user')) {
             );
 
             $items[] = array(
-                'label' => 'System Configuration',
-                'icon' => 'fas fa-cog',
-                'route' => 'core/settings/index.php?section=system',
-                'permission' => null,
-            );
-
-            $items[] = array(
                 'label' => 'Settings',
                 'icon' => 'fas fa-cog',
                 'route' => 'core/settings/index.php',
