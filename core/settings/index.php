@@ -11,7 +11,7 @@ require_once dirname(__DIR__) . '/navigation/navigation-service.php';
 require_once dirname(__DIR__, 2) . '/modules/module-context.php';
 
 therain_session_start_secure();
-$user = therain_require_login('../login.php');
+$user = therain_require_login('../../auth/login.php');
 $connection = therain_db();
 if (!therain_user_has_permission($user['id'], $user['tenant_id'], 'pharmacy.settings.manage', $connection)) {
     http_response_code(403);

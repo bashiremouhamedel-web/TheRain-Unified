@@ -131,6 +131,12 @@ if (!function_exists('therain_dashboard_render')) {
               && substr($routePath, -4) === '.php'
               && isset($currentQuery['view'])
               && ltrim((string) $currentQuery['view'], '/') === ltrim($routePath, '/')) {
+            $routeQuery = array();
+            parse_str($routeParts['query'] ?? '', $routeQuery);
+            foreach ($routeQuery as $key => $value) {
+              if ($key === 'view') continue;
+              if (!isset($currentQuery[$key]) || (string) $currentQuery[$key] !== (string) $value) return false;
+            }
             return true;
           }
           if ($routePath === '/' || substr($currentPath, -strlen($routePath)) !== $routePath) {
@@ -171,9 +177,9 @@ if (!function_exists('therain_dashboard_render')) {
                     }
                 }
                 if ($hasChildren) {
-                    echo '<li class="shell-nav-item shell-nav-group ' . (($isCurrent || $hasActiveChild) ? 'is-open' : '') . '" style="--shell-nav-depth:' . (int) $depth . ';">';
-                    echo '<details ' . (($isCurrent || $hasActiveChild) ? 'open' : '') . ' class="shell-dropdown">';
-                    echo '<summary class="shell-nav-summary ' . (($isCurrent || $hasActiveChild) ? 'is-active' : '') . '">';
+                  echo '<li class="shell-nav-item shell-nav-group ' . ($hasActiveChild ? 'is-open' : '') . '" style="--shell-nav-depth:' . (int) $depth . ';">';
+                  echo '<details ' . ($hasActiveChild ? 'open' : '') . ' class="shell-dropdown">';
+                  echo '<summary class="shell-nav-summary ' . ($hasActiveChild ? 'is-open' : '') . '">';
                     echo '<a href="' . therain_dashboard_escape($navigationHref($route)) . '" title="' . therain_dashboard_escape($item['label']) . '">';
                     echo '<i class="' . therain_dashboard_escape($item['icon'] ?? 'fas fa-circle') . '"></i>';
                     echo '<span>' . therain_dashboard_escape($item['label']) . '</span>';

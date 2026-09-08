@@ -9,7 +9,7 @@ require_once dirname(__DIR__) . '/navigation/navigation-service.php';
 require_once dirname(__DIR__, 2) . '/modules/module-context.php';
 
 therain_session_start_secure();
-$user = therain_require_login('../login.php');
+$user = therain_require_login('../../auth/login.php');
 $connection = therain_db();
 $identity = therain_dashboard_identity($user, $connection);
 $moduleStatement = $connection->prepare('SELECT module_slug FROM tenant_modules WHERE tenant_id = ? AND status = "enabled" LIMIT 1');

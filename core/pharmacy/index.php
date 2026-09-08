@@ -11,7 +11,7 @@ require_once dirname(__DIR__, 2) . '/modules/module-context.php';
 require_once dirname(__DIR__, 2) . '/management/pharmacy/compatibility/bridge-service.php';
 
 therain_session_start_secure();
-$user = therain_require_login('../login.php');
+$user = therain_require_login('../../auth/login.php');
 $connection = therain_db();
 $view = basename((string) ($_GET['view'] ?? 'pos.php'));
 $subview = (string) ($_GET['subview'] ?? '');

@@ -60,7 +60,7 @@ body.dashboard-shell { margin: 0; background: var(--shell-bg); color: #1d3b55; f
 .shell-nav-summary { display: flex; align-items: center; min-height: 42px; padding: 0; border-left: 3px solid transparent; border-radius: 7px; color: #527286; }
 .shell-nav-summary a { display: flex; align-items: center; flex: 1; gap: 13px; min-width: 0; min-height: 42px; padding: 9px 8px 9px 9px; border-left: 0; border-radius: 0; color: inherit; text-decoration: none; }
 .shell-nav-summary span, .shell-subnav-item span, .shell-sidebar li > a span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shell-nav-summary.is-active, .shell-subnav-item a.is-active, .shell-nav-item a.is-active { border-left-color: var(--shell-primary); background: linear-gradient(90deg, #dff7fa, #effbfd); color: #087c93; }
+.shell-nav-summary.is-open { border-left-color: transparent; background: transparent; color: #087c93; }.shell-subnav-item a.is-active, .shell-nav-item > a.is-active { border-left-color: var(--shell-primary); background: linear-gradient(90deg, #dff7fa, #effbfd); color: #087c93; }
 .shell-dropdown-caret { width: 30px; flex: 0 0 30px; color: #7f9aae; font-size: .72rem; text-align: center; }
 .shell-subnav { padding: 4px 0 0 18px; display: grid; gap: 4px; }
 .shell-subnav-item a { display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 6px 10px 6px 9px; border-left: 3px solid transparent; border-radius: 6px; color: #5a7285; font-size: calc(.66rem + 5px); text-decoration: none; }

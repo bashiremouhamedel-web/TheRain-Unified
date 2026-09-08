@@ -94,8 +94,8 @@ if (!function_exists('therain_navigation_for_user')) {
                     array('label' => 'Brands', 'icon' => 'fas fa-certificate', 'route' => 'manage-brand.php', 'permission' => 'pharmacy.products.view'),
                     array('label' => 'Stock', 'icon' => 'fas fa-box', 'route' => 'stock.php', 'permission' => 'pharmacy.inventory.view'),
                     array('label' => 'Stock Movement', 'icon' => 'fas fa-arrows-alt', 'route' => 'stock.php', 'permission' => 'pharmacy.inventory.view'),
-                    array('label' => 'Low Stock', 'icon' => 'fas fa-exclamation-triangle', 'route' => 'low-stock-report.php', 'permission' => 'pharmacy.inventory.view'),
-                    array('label' => 'Out of Stock', 'icon' => 'fas fa-ban', 'route' => 'low-stock-report.php', 'permission' => 'pharmacy.inventory.view'),
+                    array('label' => 'Low Stock', 'icon' => 'fas fa-exclamation-triangle', 'route' => 'core/pharmacy/index.php?view=low-stock-report.php&subview=low-stock', 'permission' => 'pharmacy.inventory.view'),
+                    array('label' => 'Out of Stock', 'icon' => 'fas fa-ban', 'route' => 'core/pharmacy/index.php?view=low-stock-report.php&subview=out-stock', 'permission' => 'pharmacy.inventory.view'),
                     array('label' => 'Near Expiry', 'icon' => 'fas fa-clock', 'route' => 'today-report.php', 'permission' => 'pharmacy.inventory.view'),
                     array('label' => 'Expired Products', 'icon' => 'fas fa-calendar-times', 'route' => 'today-report.php', 'permission' => 'pharmacy.inventory.view'),
                     array('label' => 'Damaged Products', 'icon' => 'fas fa-bolt', 'route' => 'damage.php', 'permission' => 'pharmacy.inventory.view'),
@@ -221,8 +221,8 @@ if (!function_exists('therain_navigation_for_user')) {
                 'route' => 'core/reports/index.php',
                 'permission' => null,
                 'children' => array(
-                    array('label' => 'Help / Documentation', 'icon' => 'fas fa-book', 'route' => 'core/reports/index.php', 'permission' => null),
-                    array('label' => 'System Support', 'icon' => 'fas fa-headset', 'route' => 'core/reports/index.php', 'permission' => null),
+                    array('label' => 'Help / Documentation', 'icon' => 'fas fa-book', 'route' => 'core/reports/index.php?section=documentation', 'permission' => null),
+                    array('label' => 'System Support', 'icon' => 'fas fa-headset', 'route' => 'core/reports/index.php?section=support', 'permission' => null),
                 ),
             );
 
