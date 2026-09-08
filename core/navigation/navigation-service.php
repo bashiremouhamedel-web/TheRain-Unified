@@ -231,23 +231,6 @@ if (!function_exists('therain_navigation_for_user')) {
                 'icon' => 'fas fa-cog',
                 'route' => 'core/settings/index.php?section=system',
                 'permission' => null,
-                'children' => array(
-                    array('label' => 'General Settings', 'icon' => 'fas fa-sliders-h', 'route' => 'core/settings/index.php?section=general', 'permission' => null),
-                    array('label' => 'Business Profile', 'icon' => 'fas fa-building', 'route' => 'core/settings/index.php?section=profile', 'permission' => null),
-                    array('label' => 'Pharmacy Settings', 'icon' => 'fas fa-clinic-medical', 'route' => 'core/settings/index.php?section=pharmacy', 'permission' => null),
-                    array('label' => 'Appearance', 'icon' => 'fas fa-paint-brush', 'route' => 'core/settings/index.php?section=appearance', 'permission' => null),
-                    array('label' => 'Theme', 'icon' => 'fas fa-moon', 'route' => 'core/settings/index.php?section=theme', 'permission' => null),
-                    array('label' => 'Language', 'icon' => 'fas fa-language', 'route' => 'core/settings/index.php?section=language', 'permission' => null),
-                    array('label' => 'Currency', 'icon' => 'fas fa-coins', 'route' => 'core/settings/index.php?section=currency', 'permission' => null),
-                    array('label' => 'Notifications Settings', 'icon' => 'fas fa-bell', 'route' => 'core/settings/index.php?section=notifications', 'permission' => null),
-                    array('label' => 'Payment Settings', 'icon' => 'fas fa-credit-card', 'route' => 'core/settings/index.php?section=payment', 'permission' => null),
-                    array('label' => 'Tax / Financial Settings', 'icon' => 'fas fa-file-invoice-dollar', 'route' => 'core/settings/index.php?section=tax', 'permission' => null),
-                    array('label' => 'Printing', 'icon' => 'fas fa-print', 'route' => 'core/settings/index.php?section=printing', 'permission' => null),
-                    array('label' => 'Barcode / QR Settings', 'icon' => 'fas fa-qrcode', 'route' => 'core/settings/index.php?section=barcode', 'permission' => null),
-                    array('label' => 'Branches', 'icon' => 'fas fa-code-branch', 'route' => 'core/settings/index.php?section=branches', 'permission' => null),
-                    array('label' => 'Backup', 'icon' => 'fas fa-database', 'route' => 'core/settings/index.php?section=backup', 'permission' => null),
-                    array('label' => 'System Information', 'icon' => 'fas fa-info-circle', 'route' => 'core/settings/index.php?section=system', 'permission' => null),
-                ),
             );
 
             $items[] = array(

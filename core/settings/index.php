@@ -29,14 +29,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && therain_csrf_verify($_POST['csrf_to
         $message = 'Setting saved for this tenant.';
     }
 }
-$settingKey = 'settings.' . ($section ?: 'general');
+$sections = array(
+    'general' => array('General Settings', 'fas fa-sliders-h', 'Workspace defaults and operational preferences.', 'Workspace'),
+    'profile' => array('Business Profile', 'fas fa-building', 'Business name, contact details, and identity.', 'Workspace'),
+    'pharmacy' => array('Pharmacy Settings', 'fas fa-clinic-medical', 'Pharmacy-specific operating preferences.', 'Operations'),
+    'appearance' => array('Appearance', 'fas fa-paint-brush', 'Layout, density, and dashboard presentation.', 'Experience'),
+    'theme' => array('Theme', 'fas fa-moon', 'Light, dark, and system display preferences.', 'Experience'),
+    'language' => array('Language', 'fas fa-language', 'Workspace language and regional formatting.', 'Experience'),
+    'currency' => array('Currency', 'fas fa-coins', 'Display currency and financial formatting.', 'Finance'),
+    'notifications' => array('Notifications Settings', 'fas fa-bell', 'Alerts, reminders, and notification behavior.', 'Operations'),
+    'payment' => array('Payment Settings', 'fas fa-credit-card', 'Payment methods and settlement preferences.', 'Finance'),
+    'tax' => array('Tax / Financial Settings', 'fas fa-file-invoice-dollar', 'Tax rules and financial controls.', 'Finance'),
+    'printing' => array('Printing', 'fas fa-print', 'Receipt and document printing preferences.', 'Tools'),
+    'barcode' => array('Barcode / QR Settings', 'fas fa-qrcode', 'Barcode and QR generation preferences.', 'Tools'),
+    'branches' => array('Branches', 'fas fa-code-branch', 'Branch and location configuration.', 'Workspace'),
+    'backup' => array('Backup', 'fas fa-database', 'Data protection and backup configuration.', 'Security'),
+    'system' => array('System Information', 'fas fa-info-circle', 'Platform status and installation information.', 'Security'),
+);
+if (!isset($sections[$section])) {
+    $section = 'general';
+}
+$settingKey = 'settings.' . $section;
 $statement = $connection->prepare('SELECT setting_value FROM tenant_settings WHERE tenant_id = ? AND setting_key = ? LIMIT 1');
 $statement->bind_param('is', $user['tenant_id'], $settingKey); $statement->execute(); $setting = $statement->get_result()->fetch_assoc(); $statement->close();
 $escape = 'therain_dashboard_escape';
-$sections = array('general' => 'General Settings', 'profile' => 'Business Profile', 'pharmacy' => 'Pharmacy Settings', 'appearance' => 'Appearance', 'theme' => 'Theme', 'language' => 'Language', 'currency' => 'Currency', 'notifications' => 'Notifications Settings', 'payment' => 'Payment Settings', 'tax' => 'Tax / Financial Settings', 'printing' => 'Printing', 'barcode' => 'Barcode / QR Settings', 'branches' => 'Branches', 'backup' => 'Backup', 'system' => 'System Information');
-$links = '';
-foreach ($sections as $key => $label) $links .= '<a class="settings-section-link ' . ($section === $key ? 'is-active' : '') . '" href="?section=' . rawurlencode($key) . '"><i class="fas fa-chevron-right"></i>' . $escape($label) . '</a>';
-$content = '<section class="dashboard-hero"><div><p class="dashboard-kicker">Workspace configuration</p><h1>Settings</h1><p>Manage tenant preferences, display behavior and Pharmacy configuration.</p></div><div class="dashboard-date"><i class="fas fa-cog"></i><span>Tenant scoped</span></div></section><section class="settings-layout"><nav class="dashboard-panel settings-menu" aria-label="Settings sections">' . $links . '</nav><article class="dashboard-panel"><div class="panel-heading"><div><i class="fas fa-sliders-h"></i><div><h2>' . $escape($sections[$section] ?? 'Settings') . '</h2><small>Changes apply to the current tenant only.</small></div></div></div>' . ($message ? '<div class="card-feedback card-feedback-success">' . $escape($message) . '</div>' : '') . '<form method="post" class="identity-card-form">' . therain_csrf_field() . '<label>Configuration value<textarea name="setting_value" rows="8" class="settings-textarea">' . $escape($setting['setting_value'] ?? '') . '</textarea></label><button class="auth-button" type="submit"><i class="fas fa-save"></i> Save setting</button></form></article></section>';
+$cards = '';
+$groups = array('Workspace', 'Operations', 'Experience', 'Finance', 'Tools', 'Security');
+foreach ($groups as $group) {
+    $groupCards = '';
+    foreach ($sections as $key => $definition) {
+        if ($definition[3] !== $group) continue;
+        $groupCards .= '<a class="settings-card ' . ($section === $key ? 'is-active' : '') . '" href="?section=' . rawurlencode($key) . '"><span class="settings-card-icon"><i class="' . $escape($definition[1]) . '"></i></span><span><strong>' . $escape($definition[0]) . '</strong><small>' . $escape($definition[2]) . '</small></span><i class="fas fa-arrow-right settings-card-arrow"></i></a>';
+    }
+    if ($groupCards !== '') $cards .= '<section class="settings-group"><h2>' . $escape($group) . '</h2><div class="settings-card-grid">' . $groupCards . '</div></section>';
+}
+$content = '<section class="dashboard-hero"><div><p class="dashboard-kicker">Workspace configuration</p><h1>Settings</h1><p>One organized control center for tenant preferences, Pharmacy operations, finance, security, and display behavior.</p></div><div class="dashboard-date"><i class="fas fa-cog"></i><span>Tenant scoped</span></div></section>'
+    . '<section class="settings-center"><div class="settings-center-intro"><div><span class="settings-center-icon"><i class="fas fa-layer-group"></i></span><div><h2>System settings center</h2><p>Select a configuration area below. Every change is saved to this tenant only.</p></div></div><span class="settings-count">' . count($sections) . ' areas</span></div>' . $cards . '</section>'
+    . '<section class="dashboard-panel settings-editor"><div class="panel-heading"><div><i class="' . $escape($sections[$section][1]) . '"></i><div><h2>' . $escape($sections[$section][0]) . '</h2><small>' . $escape($sections[$section][2]) . '</small></div></div><span class="panel-chip">Editing tenant setting</span></div>' . ($message ? '<div class="card-feedback card-feedback-success">' . $escape($message) . '</div>' : '') . '<form method="post" class="identity-card-form">' . therain_csrf_field() . '<label>Configuration value<textarea name="setting_value" rows="6" class="settings-textarea" placeholder="Enter a value for this setting">' . $escape($setting['setting_value'] ?? '') . '</textarea></label><button class="auth-button" type="submit"><i class="fas fa-save"></i> Save ' . $escape($sections[$section][0]) . '</button></form></section>';
 $moduleStatement = $connection->prepare('SELECT module_slug FROM tenant_modules WHERE tenant_id = ? AND status = "enabled" LIMIT 1'); $moduleStatement->bind_param('i', $user['tenant_id']); $moduleStatement->execute(); $moduleRow = $moduleStatement->get_result()->fetch_assoc(); $moduleStatement->close();
 $moduleSlug = $moduleRow['module_slug'] ?? 'pharmacy'; $context = new TheRainModuleContext($user['tenant_id'], $user['id'], null, $connection);
 $navigation = therain_navigation_for_user($moduleSlug, $context, $user['id'], $user['tenant_id'], $connection);
