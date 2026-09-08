@@ -1,0 +1,26 @@
+-- Phase 16.8 identity cards. Additive and tenant-scoped; legacy Pharmacy tables are untouched.
+CREATE TABLE IF NOT EXISTS identity_cards (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    tenant_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED DEFAULT NULL,
+    card_type VARCHAR(30) NOT NULL DEFAULT 'STAFF',
+    card_number VARCHAR(80) NOT NULL,
+    holder_name VARCHAR(190) NOT NULL,
+    role_label VARCHAR(150) DEFAULT NULL,
+    phone VARCHAR(50) DEFAULT NULL,
+    email VARCHAR(190) DEFAULT NULL,
+    theme_color CHAR(7) NOT NULL DEFAULT '#17A2B8',
+    qr_payload VARCHAR(255) NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE',
+    issued_at DATETIME NOT NULL,
+    expires_at DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY identity_cards_number_unique (card_number),
+    UNIQUE KEY identity_cards_qr_unique (qr_payload),
+    KEY identity_cards_tenant_index (tenant_id),
+    KEY identity_cards_user_index (user_id),
+    CONSTRAINT identity_cards_tenant_foreign FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT identity_cards_user_foreign FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

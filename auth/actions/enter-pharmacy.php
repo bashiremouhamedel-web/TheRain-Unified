@@ -17,6 +17,9 @@ require_once dirname(__DIR__, 2) . '/management/pharmacy/compatibility/bridge-se
 
 therain_session_start_secure();
 $user = therain_require_login('../login.php');
+$requestedTarget = isset($_GET['target']) ? rawurldecode((string) $_GET['target']) : '';
+$requestedTargetPath = parse_url($requestedTarget, PHP_URL_PATH) ?: '';
+$legacyTarget = preg_match('/^[A-Za-z0-9_-]+\.php$/', $requestedTargetPath) ? $requestedTargetPath : '';
 
 $connection = therain_db();
 
@@ -102,5 +105,5 @@ $_SESSION['store_id'] = $storeId;
 $_SESSION['therain_acting_user_id'] = $user['id'];
 session_write_close();
 
-header('Location: ../../index.php');
+header('Location: ../../' . ($legacyTarget !== '' ? $legacyTarget : 'index.php'));
 exit();

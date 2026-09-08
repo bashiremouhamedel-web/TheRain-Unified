@@ -80,10 +80,10 @@
                         $year = date('Y', strtotime($date));
                         $dateLoop = $year."-".$month."-".$day;
                         while($day <= 31){
-                          $sellAmount = mysqli_fetch_assoc($conn->query("SELECT SUM(total_price) as pr FROM `invoice_summary` WHERE `store` = '$_SESSION[store_id]' and order_date = '$dateLoop' group by order_date"));
-                          $purchaseAmount = mysqli_fetch_assoc($conn->query("SELECT SUM(payable) as ps FROM `purchase_summary` WHERE `store` = '$_SESSION[store_id]' and `date` = '$dateLoop' group by `date`"));
-                          $expense = mysqli_fetch_assoc($conn->query("SELECT SUM(amount) as ee FROM `expense` WHERE `store` = '$_SESSION[store_id]' and `expense_date` = '$dateLoop' group by `expense_date`"));
-                          $returned = mysqli_fetch_assoc($conn->query("SELECT SUM(returnable) as rr FROM `return_summary` WHERE `store` = '$_SESSION[store_id]' and `date` = '$dateLoop' group by `date`"));
+                          $sellAmount = mysqli_fetch_assoc($conn->query("SELECT SUM(total_price) as pr FROM `p_invoice_summary` WHERE `store` = '$_SESSION[store_id]' and order_date = '$dateLoop' group by order_date"));
+                          $purchaseAmount = mysqli_fetch_assoc($conn->query("SELECT SUM(payable) as ps FROM `p_purchase_summary` WHERE `store` = '$_SESSION[store_id]' and `date` = '$dateLoop' group by `date`"));
+                          $expense = mysqli_fetch_assoc($conn->query("SELECT SUM(amount) as ee FROM `p_expense` WHERE `store` = '$_SESSION[store_id]' and `expense_date` = '$dateLoop' group by `expense_date`"));
+                          $returned = mysqli_fetch_assoc($conn->query("SELECT SUM(returnable) as rr FROM `p_return_summary` WHERE `store` = '$_SESSION[store_id]' and `date` = '$dateLoop' group by `date`"));
                       ?>
                       <tr>
                         <td><?php echo $dateLoop; ?></td>

@@ -107,7 +107,7 @@ if (!function_exists('therain_dashboard_render')) {
     </a>
     <details class="shell-profile">
       <summary><span class="shell-avatar"><?php if ($photo) : ?><img src="<?php echo therain_dashboard_escape($base . ltrim($photo, '/')); ?>" alt="<?php echo therain_dashboard_escape($displayName); ?> profile photo"><?php else : ?><i class="fas fa-user"></i><?php endif; ?></span><span><strong><?php echo therain_dashboard_escape($displayName); ?></strong><small><?php echo therain_dashboard_escape(implode(', ', $roleNames) ?: 'Member'); ?></small></span><i class="fas fa-chevron-down"></i></summary>
-      <div class="shell-profile-menu"><a href="<?php echo $base; ?>auth/actions/logout.php">Logout</a></div>
+      <div class="shell-profile-menu"><a href="<?php echo $base; ?>core/admin/index.php?section=profiles">My Profile</a></div>
     </details>
   </div>
 </header>
@@ -117,16 +117,86 @@ if (!function_exists('therain_dashboard_render')) {
       <?php if ($logo) : ?><img src="<?php echo therain_dashboard_escape($base . ltrim($logo, '/')); ?>" alt="<?php echo therain_dashboard_escape($businessName); ?> logo"><?php else : ?><span class="shell-brand-mark">TR</span><?php endif; ?>
       <span><strong><?php echo therain_dashboard_escape($businessName); ?></strong><small><?php echo therain_dashboard_escape($moduleName); ?></small></span>
     </a>
-    <nav aria-label="Main navigation"><ul>
-      <?php $lastNavigationGroup = null; foreach ($navigation as $item) :
-          $label = strtolower($item['label']);
-          $group = in_array($label, array('dashboard', 'notifications'), true) ? 'Main' : (in_array($label, array('pos', 'sales', 'returns'), true) ? 'Sales' : (in_array($label, array('products', 'add product', 'stock', 'damage'), true) ? 'Products & inventory' : (in_array($label, array('purchases', 'suppliers'), true) ? 'Purchasing' : (in_array($label, array('payments', 'expenses'), true) ? 'Finance' : (in_array($label, array('reports'), true) ? 'Reports' : 'Customers')))));
-          if ($group !== $lastNavigationGroup) : ?><li class="shell-nav-heading"><?php echo therain_dashboard_escape($group); ?></li><?php $lastNavigationGroup = $group; endif; ?>
-        <li><a class="<?php echo (strpos($_SERVER['REQUEST_URI'] ?? '', '/' . ltrim($item['route'], '/')) !== false) ? 'is-active' : ''; ?>" href="<?php echo therain_dashboard_escape($base . ltrim($item['route'], '/')); ?>" title="<?php echo therain_dashboard_escape($item['label']); ?>"><i class="<?php echo therain_dashboard_escape($item['icon'] ?? 'fas fa-circle'); ?>"></i><span><?php echo therain_dashboard_escape($item['label']); ?></span></a></li>
-      <?php endforeach; ?>
-    </ul></nav>
-    <div class="shell-sidebar-footer"><strong>TheRain Unified</strong><small><?php echo therain_dashboard_escape($moduleName); ?></small><small>v16.7</small></div>
-    <a class="shell-logout" href="<?php echo $base; ?>auth/actions/logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    <nav aria-label="Main navigation">
+      <ul class="shell-nav-list">
+        <?php
+        $currentPath = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '/');
+        $currentQuery = array();
+        parse_str((string) ($_SERVER['QUERY_STRING'] ?? ''), $currentQuery);
+        $navMatches = function ($route) use ($currentPath, $currentQuery) {
+          $routeParts = parse_url($route);
+          $routePath = '/' . ltrim(rawurldecode($routeParts['path'] ?? ''), '/');
+          if ($routePath === '/' || substr($currentPath, -strlen($routePath)) !== $routePath) {
+            return false;
+          }
+          if (empty($routeParts['query'])) {
+            return true;
+          }
+          $routeQuery = array();
+          parse_str($routeParts['query'], $routeQuery);
+          foreach ($routeQuery as $key => $value) {
+            if (!isset($currentQuery[$key]) || (string) $currentQuery[$key] !== (string) $value) {
+              return false;
+            }
+          }
+          return true;
+        };
+        $navigationHref = function ($route) use ($base) {
+          $route = (string) $route;
+          $routePath = parse_url($route, PHP_URL_PATH) ?: '';
+          if (strpos($routePath, '/') === false && substr($routePath, -4) === '.php' && $routePath !== 'auth.php') {
+            return $base . 'auth/actions/enter-pharmacy.php?target=' . rawurlencode($route);
+          }
+          return $base . ltrim($route, '/');
+        };
+        $renderNavigation = function ($items, $depth = 0) use (&$renderNavigation, $navigationHref, $navMatches) {
+            foreach ($items as $item) {
+                $route = isset($item['route']) ? (string) $item['route'] : '';
+                $children = $item['children'] ?? array();
+                $hasChildren = !empty($children);
+                $isCurrent = $route !== '' && $navMatches($route);
+                $hasActiveChild = false;
+                foreach ($children as $child) {
+                    $childRoute = isset($child['route']) ? (string) $child['route'] : '';
+                  if ($childRoute !== '' && $navMatches($childRoute)) {
+                        $hasActiveChild = true;
+                        break;
+                    }
+                }
+                if ($hasChildren) {
+                    echo '<li class="shell-nav-item shell-nav-group ' . (($isCurrent || $hasActiveChild) ? 'is-open' : '') . '" style="--shell-nav-depth:' . (int) $depth . ';">';
+                    echo '<details ' . (($isCurrent || $hasActiveChild) ? 'open' : '') . ' class="shell-dropdown">';
+                    echo '<summary class="shell-nav-summary ' . (($isCurrent || $hasActiveChild) ? 'is-active' : '') . '">';
+                    echo '<a href="' . therain_dashboard_escape($navigationHref($route)) . '" title="' . therain_dashboard_escape($item['label']) . '">';
+                    echo '<i class="' . therain_dashboard_escape($item['icon'] ?? 'fas fa-circle') . '"></i>';
+                    echo '<span>' . therain_dashboard_escape($item['label']) . '</span>';
+                    echo '</a>';
+                    echo '<i class="fas fa-chevron-down shell-dropdown-caret"></i>';
+                    echo '</summary>';
+                    echo '<ul class="shell-subnav">';
+                    foreach ($children as $child) {
+                        $childRoute = isset($child['route']) ? (string) $child['route'] : '';
+                      $childCurrent = $childRoute !== '' && $navMatches($childRoute);
+                        echo '<li class="shell-subnav-item"><a class="' . ($childCurrent ? 'is-active' : '') . '" href="' . therain_dashboard_escape($navigationHref($childRoute)) . '" title="' . therain_dashboard_escape($child['label']) . '"><i class="' . therain_dashboard_escape($child['icon'] ?? 'fas fa-circle') . '"></i><span>' . therain_dashboard_escape($child['label']) . '</span></a></li>';
+                    }
+                    echo '</ul>';
+                    echo '</details>';
+                    echo '</li>';
+                    continue;
+                }
+
+                echo '<li class="shell-nav-item" style="--shell-nav-depth:' . (int) $depth . ';"><a class="' . ($isCurrent ? 'is-active' : '') . '" href="' . therain_dashboard_escape($navigationHref($route)) . '" title="' . therain_dashboard_escape($item['label']) . '"><i class="' . therain_dashboard_escape($item['icon'] ?? 'fas fa-circle') . '"></i><span>' . therain_dashboard_escape($item['label']) . '</span></a></li>';
+            }
+        };
+        $renderNavigation($navigation);
+        ?>
+      </ul>
+    </nav>
+    <div class="shell-sidebar-footer">
+      <a class="shell-footer-profile" href="<?php echo $base; ?>core/admin/index.php?section=profiles" title="My Profile"><span class="shell-avatar"><i class="fas fa-user"></i></span><span><strong><?php echo therain_dashboard_escape($displayName); ?></strong><small>My Profile</small></span></a>
+      <small class="shell-footer-context"><?php echo therain_dashboard_escape($moduleName); ?> · v16.7</small>
+      <a class="shell-logout" data-action="logout" href="<?php echo $base; ?>auth/actions/logout.php" title="Logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
   </aside>
   <main class="shell-main"><div class="shell-content"><?php echo $content; ?></div></main>
 </div>
@@ -137,10 +207,35 @@ if (!function_exists('therain_dashboard_render')) {
   var sidebar = document.querySelector('[data-shell-sidebar]');
   var toggle = document.querySelector('[data-shell-toggle]');
   var themeToggle = document.querySelector('[data-shell-theme-toggle]');
+  var nav = sidebar.querySelector('nav');
   var key = 'therain.dashboard.sidebar.collapsed';
+  var dropdownKey = 'therain.dashboard.sidebar.dropdowns';
+  var scrollKey = 'therain.dashboard.sidebar.scroll';
   var themeKey = 'therain.dashboard.theme';
+  var savedDropdowns = JSON.parse(localStorage.getItem(dropdownKey) || '{}');
   if (localStorage.getItem(key) === '1') shell.classList.add('shell-collapsed');
   if (localStorage.getItem(themeKey) === 'dark') { shell.classList.add('shell-theme-dark'); themeToggle.querySelector('i').className = 'fas fa-sun'; }
+  Array.prototype.forEach.call(sidebar.querySelectorAll('.shell-dropdown'), function (dropdown) {
+    var label = dropdown.querySelector('.shell-nav-summary span');
+    var id = label ? label.textContent.trim() : '';
+    if (id && Object.prototype.hasOwnProperty.call(savedDropdowns, id) && !dropdown.parentElement.classList.contains('is-open')) dropdown.open = savedDropdowns[id];
+    dropdown.addEventListener('toggle', function () {
+      if (!id) return;
+      savedDropdowns[id] = dropdown.open;
+      localStorage.setItem(dropdownKey, JSON.stringify(savedDropdowns));
+    });
+  });
+  if (nav) {
+    var savedScroll = parseInt(localStorage.getItem(scrollKey) || '0', 10);
+    nav.scrollTop = isNaN(savedScroll) ? 0 : savedScroll;
+    nav.addEventListener('scroll', function () { localStorage.setItem(scrollKey, String(nav.scrollTop)); });
+    var active = nav.querySelector('a.is-active');
+    if (active) {
+      var navBox = nav.getBoundingClientRect();
+      var activeBox = active.getBoundingClientRect();
+      if (activeBox.top < navBox.top || activeBox.bottom > navBox.bottom) active.scrollIntoView({ block: 'nearest' });
+    }
+  }
   toggle.addEventListener('click', function () {
     if (window.innerWidth <= 900) {
       shell.classList.toggle('shell-mobile-open');

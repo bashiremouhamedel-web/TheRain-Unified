@@ -71,12 +71,12 @@ if(isset($_POST['orderSubmit'])){
         $sumCost += $value['cost']*$value['quantity'];
         
         // decrease qty
-        $getQty = mysqli_fetch_assoc($conn->query("SELECT `qty` FROM `medicine` WHERE `id` = '$value[code]'"));
+        $getQty = mysqli_fetch_assoc($conn->query("SELECT `qty` FROM `p_medicine` WHERE `id` = '$value[code]' AND `store` = '$_SESSION[store_id]'"));
         $qty = $getQty['qty']-$value['quantity'];
         if($qty < 0){
             $qty = 0;
         }
-        $conn->query("UPDATE `medicine` SET `qty` = '$qty' WHERE `id` = '$value[code]'");
+        $conn->query("UPDATE `p_medicine` SET `qty` = '$qty' WHERE `id` = '$value[code]' AND `store` = '$_SESSION[store_id]'");
 
         // insert into "coupon_history" table if `coupon` applied
         if(!empty($couponcodef) || ctype_space($couponcodef)){

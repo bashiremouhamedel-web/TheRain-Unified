@@ -213,7 +213,7 @@
               </form>
               <div class="row">
                   <?php
-                    $cm = runQuery("SELECT * FROM `medicine` WHERE `store` = 'admin_62b'");
+                    $cm = runQuery("SELECT * FROM `p_medicine` WHERE `store` = '" . $conn->real_escape_string((string) $_SESSION['store_id']) . "' ORDER BY `name` ASC");
                     foreach($cm as $v){
                   ?>
                   <div class="col-md-4 col-sm-6 mt-3">
@@ -222,9 +222,6 @@
                               <a href="#" class="image">
                                   <img src="dist/img/product/bonsil.jpg">
                               </a>
-                              <?php if($v['discount'] > '0'){ ?>
-                              <span class="product-hot-label">5%</span>
-                              <?php } ?>
                               <ul class="product-links">
                                   <li><a type="button" class="add-to-cart" data-code="<?php echo $v['id']; ?>" data-tip="Add to Cart"><i class="fa fa-shopping-bag"></i></a></li>
                                   <li><a href="#" data-tip="Add to Wishlist"><i class="fa fa-heart"></i></a></li>
