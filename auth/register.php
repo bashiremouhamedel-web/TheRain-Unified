@@ -98,7 +98,7 @@ function therain_old($old, $key, $default = '')
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-  <link rel="stylesheet" href="../assets/css/auth.css">
+  <link rel="stylesheet" href="../assets/css/auth.css?v=16.17-registration-layout">
 </head>
 <body class="auth-page">
 <div class="auth-layout">
@@ -138,41 +138,41 @@ function therain_old($old, $key, $default = '')
         </div>
       <?php endif; ?>
 
-      <form action="actions/register.php" method="post" enctype="multipart/form-data">
+      <form class="auth-registration-form" action="actions/register.php" method="post" enctype="multipart/form-data">
         <?php echo therain_csrf_field(); ?>
 
         <h6 class="auth-section"><?php echo therain_auth_t('owner'); ?></h6>
         <div class="form-group">
-          <label><?php echo therain_auth_t('owner_name'); ?></label>
-            <input type="text" class="form-control" name="full_name" value="<?php echo therain_old($old, 'full_name'); ?>" placeholder="Enter your full name" required>
+            <label for="full_name"><?php echo therain_auth_t('owner_name'); ?></label>
+            <input id="full_name" type="text" class="form-control" name="full_name" value="<?php echo therain_old($old, 'full_name'); ?>" placeholder="Enter your full name" required>
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label><?php echo therain_auth_t('email'); ?></label>
-            <input type="email" class="form-control" name="email" value="<?php echo therain_old($old, 'email'); ?>" placeholder="Enter your email address" required>
+            <label for="email"><?php echo therain_auth_t('email'); ?></label>
+            <input id="email" type="email" class="form-control" name="email" value="<?php echo therain_old($old, 'email'); ?>" placeholder="Enter your email address" required>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label><?php echo therain_auth_t('password'); ?></label>
-            <input type="password" class="form-control" name="password" placeholder="Create a strong password" required>
+            <label for="password"><?php echo therain_auth_t('password'); ?></label>
+            <input id="password" type="password" class="form-control" name="password" placeholder="Create a strong password" required>
             <small class="form-text text-muted"><?php echo therain_auth_t('password_hint'); ?></small>
           </div>
           <div class="form-group col-md-6">
-            <label><?php echo therain_auth_t('confirm_password'); ?></label>
-            <input type="password" class="form-control" name="confirm_password" placeholder="Confirm your password" required>
+            <label for="confirm_password"><?php echo therain_auth_t('confirm_password'); ?></label>
+            <input id="confirm_password" type="password" class="form-control" name="confirm_password" placeholder="Confirm your password" required>
           </div>
         </div>
 
         <h6 class="auth-section"><?php echo therain_auth_t('business'); ?></h6>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label><?php echo therain_auth_t('business_name'); ?></label>
-            <input type="text" class="form-control" name="business_name" value="<?php echo therain_old($old, 'business_name'); ?>" placeholder="Enter your business or organization name" required>
+            <label for="business_name"><?php echo therain_auth_t('business_name'); ?></label>
+            <input id="business_name" type="text" class="form-control" name="business_name" value="<?php echo therain_old($old, 'business_name'); ?>" placeholder="Enter your business or organization name" required>
           </div>
           <div class="form-group col-md-6">
-            <label><?php echo therain_auth_t('business_type'); ?></label>
-            <select class="form-control" name="business_type">
+            <label for="business_type"><?php echo therain_auth_t('business_type'); ?></label>
+            <select id="business_type" class="form-control" name="business_type">
               <option value="">Select a business type</option>
               <option value="retail" <?php echo isset($old['business_type']) && $old['business_type'] === 'retail' ? 'selected' : ''; ?>>Retail</option>
               <option value="services" <?php echo isset($old['business_type']) && $old['business_type'] === 'services' ? 'selected' : ''; ?>>Services</option>
@@ -184,8 +184,8 @@ function therain_old($old, $key, $default = '')
           </div>
         </div>
         <div class="form-group">
-          <label><?php echo therain_auth_t('business_description'); ?></label>
-          <textarea class="form-control" name="business_description" rows="2" placeholder="Describe your organization"><?php echo therain_old($old, 'business_description'); ?></textarea>
+          <label for="business_description"><?php echo therain_auth_t('business_description'); ?></label>
+          <textarea id="business_description" class="form-control" name="business_description" rows="2" placeholder="Describe your organization"><?php echo therain_old($old, 'business_description'); ?></textarea>
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
